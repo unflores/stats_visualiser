@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  app:
+    build:
+      context: ./infra
+      target: dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/var/www/html
+    environment:
+      APP_ENV: dev
+      APP_DEBUG: 1
