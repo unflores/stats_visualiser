@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stats-visualiser-app
+  labels:
+    app: stats-visualiser
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stats-visualiser
+  template:
+    metadata:
+      labels:
+        app: stats-visualiser
+    spec:
+      containers:
+        - name: stats-visualiser-app
+          image: stats-visualiser-app:latest
+          imagePullPolicy: Never # This is to test locally, otherwise, use dockerhub
+          ports:
+            - containerPort: 9000
+          volumeMounts:
+            - name: sqlite-storage
+              mountPath: /var/www/html/var
+      volumes:
+        - name: sqlite-storage
+          persistentVolumeClaim:
+            claimName: app-storage-sqlite-pvc
