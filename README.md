@@ -2,7 +2,7 @@
 
 This project is a web-based visualization tool for exploring and analyzing open data sets. Follow these setup instructions to get started:
 
-## Setup instructions
+## Setup instructions - Non-dockerized
 
 1. Install PHPBrew (PHP version manager):
    - Follow installation guide at: https://github.com/phpbrew/phpbrew
@@ -28,6 +28,14 @@ This project is a web-based visualization tool for exploring and analyzing open 
 
 5. Access the application:
    - Open your browser and navigate to: http://localhost:8000/
+
+## Setup instructions - Dockerized
+
+1. Install Docker and Docker Compose
+2. Run `docker compose up` to start the container
+3. Access the application:
+   - Open your browser and navigate to: http://localhost:8000/
+
 
 ## Running tests
 
