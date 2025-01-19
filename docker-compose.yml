@@ -2,8 +2,10 @@ version: "3.9"
 services:
   app:
     build:
-      context: ./infra
+      context: .
+      dockerfile: ./infra/Dockerfile
       target: dev
+    container_name: stats_vis_app
     ports:
       - "8000:8000"
     volumes:
@@ -11,3 +13,4 @@ services:
     environment:
       APP_ENV: dev
       APP_DEBUG: 1
+    command: symfony serve --port=8000 --allow-all-ip --no-tls

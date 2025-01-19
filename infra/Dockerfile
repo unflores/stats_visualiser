@@ -21,7 +21,7 @@ RUN curl -sS https://get.symfony.com/cli/installer | bash && \
 # Copy application code
 COPY . .
 
-RUN composer install --dev --no-scripts --no-interaction
+RUN composer install --no-scripts --no-interaction
 
 RUN chown -R www-data:www-data /var/www/html
 
