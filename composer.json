@@ -57,7 +57,8 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "fix-style": "php-cs-fixer fix"
     },
     "conflict": {
         "symfony/symfony": "*"

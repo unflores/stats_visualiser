@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class ThemeRepositoryTest extends KernelTestCase
 {
-    public function testAddThemeToDatabase():void 
+    public function testAddThemeToDatabase(): void
     {
         self::bootKernel();
         $container = static::getContainer();

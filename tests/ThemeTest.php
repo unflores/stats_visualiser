@@ -15,11 +15,10 @@ class ThemeTest extends TestCase
         $this->assertSame(20, $theme->getParentId());
     }
 
-    public function testGetIdTheme():void
+    public function testGetIdTheme(): void
     {
         $theme = new Theme();
         $this->assertNull($theme->getId());
         $this->assertSame(null, $theme->getId());
     }
-    
 }
