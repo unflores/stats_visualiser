@@ -4,6 +4,7 @@ RUN apt-get update && apt-get install -y \
     libpq-dev libzip-dev unzip git curl \
     && docker-php-ext-install pdo pdo_mysql zip
 
+# Instal composer from image, rather than curl and build manually
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
@@ -41,8 +42,6 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interactio
 
 RUN chown -R www-data:www-data /var/www/html
 
-# Expose the PHP-FPM port
 EXPOSE 9000
 
-# Command to run PHP-FPM
 CMD ["php-fpm"]
