@@ -57,7 +57,8 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "fix-style": "php-cs-fixer fix"
     },
     "conflict": {
         "symfony/symfony": "*"
@@ -69,7 +70,12 @@
         }
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^4.0",
         "friendsofphp/php-cs-fixer": "^3.68",
-        "symfony/maker-bundle": "^1.62"
+        "phpunit/phpunit": "^11.5",
+        "symfony/browser-kit": "7.2.*",
+        "symfony/css-selector": "7.2.*",
+        "symfony/maker-bundle": "^1.62",
+        "symfony/phpunit-bridge": "^7.2"
     }
 }
