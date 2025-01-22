@@ -5,7 +5,7 @@ metadata:
   labels:
     app: stats-visualiser
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: stats-visualiser
@@ -17,13 +17,18 @@ spec:
       containers:
         - name: stats-visualiser-app
           image: stats-visualiser-app:latest
-          imagePullPolicy: Never # This is to test locally, otherwise, use dockerhub
+          imagePullPolicy: Never
           ports:
             - containerPort: 9000
           volumeMounts:
             - name: sqlite-storage
               mountPath: /var/www/html/var
+            - name: app-code
+              mountPath: /var/www/html
+
       volumes:
         - name: sqlite-storage
           persistentVolumeClaim:
             claimName: app-storage-sqlite-pvc
+        - name: app-code
+          emptyDir: {}
