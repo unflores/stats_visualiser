@@ -12,6 +12,12 @@ jobs:
         uses: php-actions/composer@v6
         with:
           php_version: 8.2
+
+      # Fix permissions before composer operations
+      # If not some composer operations that need to update autoloader files will fail
+      - name: Fix directory permissions
+        run: sudo chown -R $USER:$USER .
+
       - name: Install Dependencies
         run: composer install
 
@@ -24,7 +30,7 @@ jobs:
             ${{ runner.OS }}-composer-
 
       - name: Lint PHP
-        run: find . -name "*.php" -type f -exec php -l {} \;
+        run: find . -name "*.php" -type f -not -path "./vendor/*" -exec php -l {} \;
 
       - name: Lint Style
         run: vendor/bin/php-cs-fixer fix --diff --dry-run
