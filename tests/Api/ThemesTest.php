@@ -2,23 +2,23 @@
 
 namespace App\Tests;
 
-use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class ThemesTest extends ApiTestCase
+class ThemesTest extends WebTestCase
 {
   // Ideally this should be replaced with a more comprehensive test
   // once we have our data model in place
     public function testApiResponse(): void
     {
 
-        echo "APP_ENV: " . $_SERVER['APP_ENV'] . "\n";
-        $response = static::createClient()->request('GET', '/api/themes');
-        echo "hai bro";
+        $client = static::createClient();
+        $client->request('GET', '/api/themes');
+
         $this->assertResponseIsSuccessful();
-        $this->assertJsonContains(['themes' => [
-            [
-                'code' => 'environment',
-            ],
-        ]]);
+        $content = $client->getResponse()->getContent();
+
+        $results = json_decode($content, true);
+        $this->assertEquals('environment', $results['themes'][0]['code']);
+
     }
 }
