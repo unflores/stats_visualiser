@@ -23,7 +23,13 @@ This project is a web-based visualization tool for exploring and analyzing open 
 
 4. Set up local development server:
    - Install Symfony CLI from: https://symfony.com/download
+   - Build database schema: `symfony console doctrine:schema:update --force`
    - Start the server: `symfony server:start`
 
 5. Access the application:
    - Open your browser and navigate to: http://localhost:8000/
+
+## Running tests
+
+- Build database schema: `symfony console doctrine:schema:update --force --env=test`
+- Run tests: `php bin/phpunit`
