@@ -16,6 +16,12 @@ class Theme
     #[ORM\Column(nullable: true)]
     private ?int $parent_id = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $title = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $data = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -29,6 +35,30 @@ class Theme
     public function setParentId(?int $parent_id): static
     {
         $this->parent_id = $parent_id;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): static
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getData(): ?string
+    {
+        return $this->data;
+    }
+
+    public function setData(?string $data): static
+    {
+        $this->data = $data;
 
         return $this;
     }
