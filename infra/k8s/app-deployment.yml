@@ -5,7 +5,7 @@ metadata:
   labels:
     app: stats-visualiser
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: stats-visualiser
@@ -15,6 +15,17 @@ spec:
         app: stats-visualiser
     spec:
       containers:
+        - name: nginx
+          image: nginx:stable
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: app-code
+              mountPath: /var/www/html
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: nginx.conf
         - name: stats-visualiser-app
           image: stats-visualiser-app:latest
           imagePullPolicy: Never
@@ -32,3 +43,6 @@ spec:
             claimName: app-storage-sqlite-pvc
         - name: app-code
           emptyDir: {}
+        - name: nginx-config
+          configMap:
+            name: nginx-config
