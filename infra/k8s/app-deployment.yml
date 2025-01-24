@@ -14,6 +14,14 @@ spec:
       labels:
         app: stats-visualiser
     spec:
+      initContainers:
+        - name: copy-app-files
+          image: stats-visualiser-app:latest
+          imagePullPolicy: Never
+          command: ['/bin/sh', '-c', 'cp -r /var/www/html/. /app/']
+          volumeMounts:
+            - name: app-code
+              mountPath: /app
       containers:
         - name: nginx
           image: nginx:stable
@@ -25,17 +33,20 @@ spec:
               mountPath: /var/www/html
             - name: nginx-config
               mountPath: /etc/nginx/conf.d/default.conf
-              subPath: nginx.conf
+              subPath: default.conf
         - name: stats-visualiser-app
           image: stats-visualiser-app:latest
           imagePullPolicy: Never
+          envFrom:
+            - configMapRef:
+                name: app-config
+            - secretRef:
+                name: app-secrets
           ports:
             - containerPort: 9000
           volumeMounts:
             - name: sqlite-storage
               mountPath: /var/www/html/var
-            - name: app-code
-              mountPath: /var/www/html
 
       volumes:
         - name: sqlite-storage
