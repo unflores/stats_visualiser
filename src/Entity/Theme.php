@@ -13,9 +13,8 @@ class Theme
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(nullable: true, name:"parentId")]
+    #[ORM\Column(nullable: true, name: 'parentId')]
     private ?int $parentId = null;
-
 
     #[ORM\Column(length: 255)]
     private ?string $code = null;
@@ -40,14 +39,12 @@ class Theme
         return $this->parentId;
     }
 
-
     public function setParentId(?int $parentId): static
     {
         $this->parentId = $parentId;
 
         return $this;
     }
-
 
     public function getCode(): ?string
     {
@@ -72,6 +69,4 @@ class Theme
 
         return $this;
     }
-
-
 }

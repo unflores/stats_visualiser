@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 
 class ThemeTest extends TestCase
 {
-    public function testSetAndgetParentId(): void 
+    public function testSetAndgetParentId(): void
     {
         $theme = new Theme();
         $this->assertNull($theme->getParentId());
