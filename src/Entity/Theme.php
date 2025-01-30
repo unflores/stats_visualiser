@@ -13,53 +13,65 @@ class Theme
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $parent_id = null;
+    #[ORM\Column(nullable: true, name:"parentId")]
+    private ?int $parentId = null;
+
 
     #[ORM\Column(length: 255)]
-    private ?string $title = null;
+    private ?string $code = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $data = null;
+    #[ORM\Column(nullable: true)]
+    private ?bool $is_section = false;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
+    public function setId(?int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function getParentId(): ?int
     {
-        return $this->parent_id;
+        return $this->parentId;
     }
 
-    public function setParentId(?int $parent_id): static
+
+    public function setParentId(?int $parentId): static
     {
-        $this->parent_id = $parent_id;
+        $this->parentId = $parentId;
 
         return $this;
     }
 
-    public function getTitle(): ?string
+
+    public function getCode(): ?string
     {
-        return $this->title;
+        return $this->code;
     }
 
-    public function setTitle(string $title): static
+    public function setCode(string $code): static
     {
-        $this->title = $title;
+        $this->code = $code;
 
         return $this;
     }
 
-    public function getData(): ?string
+    public function getIs_section(): ?bool
     {
-        return $this->data;
+        return $this->is_section;
     }
 
-    public function setData(?string $data): static
+    public function setIs_section(?bool $is_section): static
     {
-        $this->data = $data;
+        $this->is_section = $is_section;
 
         return $this;
     }
+
+
 }
