@@ -30,9 +30,17 @@ jobs:
             ${{ runner.OS }}-composer-
 
       - name: Lint PHP
-        run: find . -name "*.php" -type f -not -path "./vendor/*" -exec php -l {} \;
+        run: find . -name "*.php" -type f -not -path "./vendor/*" -not -path "./var/*" -exec php -l {} \;
 
       - name: Lint Style
         run: vendor/bin/php-cs-fixer fix --diff --dry-run
 
+      - name: Setup test db
+        run: php bin/console doctrine:database:create --env=test
+
+      - name: Run migrations
+        run: php bin/console doctrine:migrations:migrate --env=test -n
+
+      - name: Run tests
+        run: vendor/bin/phpunit
 
