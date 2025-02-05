@@ -1,22 +1,30 @@
 <?php
 
+
 namespace App\Controller\Extra;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use App\Service\ExcelService;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
 
-class ExcelController extends AbstractController 
+class ExcelController extends AbstractController
 {
-
-    #[Route('/extracts', name:'extracts')]
-    public function extractColumn(ExcelService $excelService): Response
+    #[Route('/extracts', name: 'extract_column', methods: ['GET'])]
+    public function extractColumn(ExcelService $excelService): JsonResponse
     {
-        $file = '/public/File/Z_CITEPA_emissions_GES_structure_.xlsx';
-        $filePath = $this->getParameter('kernel.project_dir') .$file;
-        $columnLetter = 'F';
+
+        $filePath = $this->getParameter('kernel.project_dir') . '/public/File/Z_CITEPA_emissions_GES_structure_.xlsx';
+        $columnLetter = 'A'; 
+
         $data = $excelService->extractColumnFromExcel($filePath, $columnLetter);
-        return $this->json($data);
+
+        if (isset($data['error'])) {
+            return new JsonResponse($data, Response::HTTP_BAD_REQUEST);
+        }
+
+        return new JsonResponse(
+            $data, Response::HTTP_OK, []);
     }
 }
