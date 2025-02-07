@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ThemeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+
 #[ORM\Entity(repositoryClass: ThemeRepository::class)]
 class Theme
 {
@@ -13,14 +14,19 @@ class Theme
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(nullable: true, name: 'parentId')]
+    #[ORM\Column(nullable: true)]
+
     private ?int $parentId = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $code = null;
+    #[ORM\Column(length: 255, nullable: false, unique: true)]
+    private ?string $code;
 
-    #[ORM\Column(nullable: true)]
-    private ?bool $is_section = false;
+    #[ORM\Column(nullable: false)]
+    private ?bool $isSection = false;
+
+    #[ORM\Column(length: 255, nullable: false, unique: true)]
+
+    private ?string $externalId;
 
     public function getId(): ?int
     {
@@ -58,14 +64,14 @@ class Theme
         return $this;
     }
 
-    public function getIs_section(): ?bool
+    public function getIsSection(): ?bool
     {
-        return $this->is_section;
+        return $this->isSection;
     }
 
-    public function setIs_section(?bool $is_section): static
+    public function setIsSection(?bool $isSection): static
     {
-        $this->is_section = $is_section;
+        $this->isSection = $isSection;
 
         return $this;
     }
