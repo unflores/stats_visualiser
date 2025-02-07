@@ -25,6 +25,6 @@
 ###< phpunit/phpunit ###
 
 phpunit.xml.old
-.phpunit.cache/
+
 
 script_memoire.txt

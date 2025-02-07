@@ -6,6 +6,10 @@
          backupGlobals="false"
          colors="true"
          bootstrap="tests/bootstrap.php"
+<<<<<<< HEAD
+=======
+         
+>>>>>>> theme-entity-modify
 >
     <php>
         <ini name="display_errors" value="1" />
@@ -23,4 +27,13 @@
         </testsuite>
     </testsuites>
 
+
+    <coverage>
+        <include>
+            <directory>src</directory>
+        </include>
+        
+    </coverage>
+
+    
 </phpunit>
