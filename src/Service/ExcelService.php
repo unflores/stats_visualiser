@@ -3,8 +3,6 @@
 namespace App\Service;
 
 use Box\Spout\Reader\Common\Creator\ReaderEntityFactory;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
 
 class ExcelService
 {
@@ -28,10 +26,10 @@ class ExcelService
 
                     if (isset($cells[$columnIndex])) {
                         $value = trim($cells[$columnIndex]->getValue());
-                        $data[] = $value;       
+                        $data[] = $value;
                     }
                 }
-                break; // Lire seulement la première feuille
+                break; 
             }
 
             $reader->close();
@@ -39,6 +37,6 @@ class ExcelService
             return ['error' => 'Erreur lors de la lecture du fichier'];
         }
 
-        return  $data;
+        return $data;
     }
 }
