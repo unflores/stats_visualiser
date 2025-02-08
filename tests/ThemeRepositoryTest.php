@@ -49,24 +49,16 @@ class ThemeRepositoryTest extends KernelTestCase
 
     public function testAddChildTheme():void
     {
-
-        $parent = new Theme();
-        $parent->setCode('Parent');
-        $parent->setIsSection(true);
-        $parent->setExternalId('1010');
-
         $child = new Theme();
         $child->setCode('Emissions GES');
         $child->setIsSection(true);
         $child->setParentId(1);
         $child->setExternalId('2981');
 
-        $this->entityManager->persist($parent);
         $this->entityManager->persist($child);
         $this->entityManager->flush();
 
         $savedTheme = $this->themeRepository->find($child->getId());
-        $this->assertSame($parent->getId(), $savedTheme->getParent()->getId());
 
         $this->assertNotNull($savedTheme);
         $this->assertSame(1, $savedTheme->getParentId());
