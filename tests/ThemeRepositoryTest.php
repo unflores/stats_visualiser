@@ -8,22 +8,40 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 class ThemeRepositoryTest extends KernelTestCase
 {
 
+    private $entityManager;
+    private $themeRepository;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        self::bootKernel();
+        $container = static::getContainer();
+        $this->entityManager = $container->get('doctrine.orm.entity_manager');
+        $this->themeRepository = $this->entityManager->getRepository(Theme::class);
+    }
+
+    protected function tearDown(): void
+    {
+
+        $themes = $this->themeRepository->findAll();
+        foreach ($themes as $theme) {
+            $this->entityManager->remove($theme);
+        }
+        $this->entityManager->flush();
+        parent::tearDown();
+    }
+
     public function testAddParentTheme(): void
     {
-       self::bootKernel();
-       $container = static::getContainer();
-
-        $entityManager = $container->get('doctrine.orm.entity_manager');
         $theme = new Theme();
         $theme->setCode('environnement');
         $theme->setIsSection(true);
         $theme->setParentId(null);
-        $theme->setExternalId('2980');
-        $entityManager->persist($theme);
-        $entityManager->flush();
-        
-        $themeRepository = $entityManager->getRepository(Theme::class);
-        $savedTheme = $themeRepository->find($theme->getId());
+        $theme->setExternalId('1024');
+        $this->entityManager->persist($theme);
+        $this->entityManager->flush();
+
+        $savedTheme = $this->themeRepository->find($theme->getId());
 
         $this->assertNotNull($savedTheme);
         $this->assertSame('environnement', $savedTheme->getCode());
@@ -31,23 +49,29 @@ class ThemeRepositoryTest extends KernelTestCase
 
     public function testAddChildTheme():void
     {
-        self::bootKernel();
-       $container = static::getContainer();
 
-        $entityManager = $container->get('doctrine.orm.entity_manager');
-        $theme = new Theme();
-        $theme->setCode('Emissions GES');
-        $theme->setIsSection(true);
-        $theme->setParentId(1);
-        $theme->setExternalId('2981');
-        $entityManager->persist($theme);
-        $entityManager->flush();
-        
-        $themeRepository = $entityManager->getRepository(Theme::class);
-        $savedTheme = $themeRepository->find($theme->getId());
+        $parent = new Theme();
+        $parent->setCode('Parent');
+        $parent->setIsSection(true);
+        $parent->setExternalId('1010');
+
+        $child = new Theme();
+        $child->setCode('Emissions GES');
+        $child->setIsSection(true);
+        $child->setParentId(1);
+        $child->setExternalId('2981');
+
+        $this->entityManager->persist($parent);
+        $this->entityManager->persist($child);
+        $this->entityManager->flush();
+
+        $savedTheme = $this->themeRepository->find($child->getId());
+        $this->assertSame($parent->getId(), $savedTheme->getParent()->getId());
 
         $this->assertNotNull($savedTheme);
         $this->assertSame(1, $savedTheme->getParentId());
-        $this->assertSame("Emissions GES", $savedTheme->getCode());
+        $this->assertSame('Emissions GES', $savedTheme->getCode());
+        $this->assertSame(true, $savedTheme->getIsSection());
+        $this->assertSame('2981', $savedTheme->getExternalId());
     }
 }
