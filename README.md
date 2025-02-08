@@ -21,12 +21,18 @@ This project is a web-based visualization tool for exploring and analyzing open 
    - Follow installation steps at: https://getcomposer.org/download/
    - Run `composer install` to install dependencies
 
-4. Set up local development server:
+4. Run migrations:
+   ```
+   composer db:create
+   composer db:migrate
+   ```
+
+5. Set up local development server:
    - Install Symfony CLI from: https://symfony.com/download
    - Build database schema: `symfony console doctrine:schema:update --force`
    - Start the server: `symfony server:start`
 
-5. Access the application:
+6. Access the application:
    - Open your browser and navigate to: http://localhost:8000/
 
 ## Running tests
