@@ -26,3 +26,4 @@
 phpunit.xml.old
 
 script_memoire.txt
+.phpunit.cache

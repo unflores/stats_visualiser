@@ -14,7 +14,7 @@ final class Version20250206105138 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'creation of the theme table';
     }
 
     public function up(Schema $schema): void

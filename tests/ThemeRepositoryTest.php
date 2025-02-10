@@ -27,7 +27,6 @@ class ThemeRepositoryTest extends KernelTestCase
 
         $this->assertNotNull($savedTheme);
         $this->assertSame('environnement', $savedTheme->getCode());
-
     }
 
     public function testAddChildTheme():void
