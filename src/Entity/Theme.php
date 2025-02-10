@@ -20,7 +20,7 @@ class Theme
     private ?string $code;
 
     #[ORM\Column(nullable: false)]
-    private ?bool $isSection = false;
+    private ?bool $isSection ;
 
     #[ORM\Column(length: 255, nullable: false, unique: true)]
     private ?string $externalId;
