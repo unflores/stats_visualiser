@@ -7,18 +7,16 @@ use PHPUnit\Framework\TestCase;
 
 class ThemeTest extends TestCase
 {
-    public function testSetAndgetParentId(): void
+    public function testAddEntityTheme(): void
     {
         $theme = new Theme();
-        $this->assertNull($theme->getParentId());
-        $theme->setParentId(20);
-        $this->assertSame(20, $theme->getParentId());
-    }
-
-    public function testGetIdTheme(): void
-    {
-        $theme = new Theme();
-        $this->assertNull($theme->getId());
-        $this->assertSame(null, $theme->getId());
+        $theme->setCode('environement');
+        $theme->setIsSection(true);
+        $theme->setParentId(null);
+        $theme->setExternalId('2980');
+        $this->assertSame('environement', $theme->getCode());
+        $this->assertSame(true, $theme->getIsSection());
+        $this->assertSame(null, $theme->getParentId());
+        $this->assertSame('2980', $theme->getExternalId());
     }
 }

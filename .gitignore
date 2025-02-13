@@ -23,6 +23,7 @@
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
-
+phpunit.xml.old
 
 script_memoire.txt
+.phpunit.cache
