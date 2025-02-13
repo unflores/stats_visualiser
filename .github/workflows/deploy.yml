@@ -1,0 +1,54 @@
+name: Deploy Application
+
+on:
+  deployment
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.WEBAPP_DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H 165.232.69.153 >> ~/.ssh/known_hosts
+
+    - name: Put Site in Maintenance Mode
+      run: |
+        ssh deployer@165.232.69.153 << 'EOF'
+          touch /var/www/stats_visualiser/maintenance.flag
+          sudo systemctl restart nginx
+        EOF
+
+    - name: Deploy Symfony
+      run: |
+        ssh deployer@165.232.69.153 << 'EOF'
+          cd /var/www/stats_visualiser
+          git fetch --all --tags
+          git checkout ${{ github.event.deployment.ref }}
+
+          composer install --no-interaction --no-dev --optimize-autoloader
+
+          php bin/console cache:clear --env=prod
+
+
+          sudo chmod -R 775 /var/www/stats_visualiser/*
+          sudo chown -R www-data:www-data /var/www/stats_visualiser
+
+          php bin/console doctrine:migrations:migrate --no-interaction
+          php bin/console cache:warmup --env=prod
+
+          sudo systemctl restart php8.3-fpm
+        EOF
+
+    - name: Bring Site Back Online
+      run: |
+        ssh deployer@165.232.69.153 << 'EOF'
+          rm -f /var/www/stats_visualiser/maintenance.flag
+          sudo systemctl restart nginx
+        EOF
