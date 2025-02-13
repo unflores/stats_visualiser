@@ -6,6 +6,10 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      DOMAIN: 165.232.69.153
+      DEPLOY_PATH: /var/www/stats_visualiser
+      MAINTENANCE_FLAG: /var/www/stats_visualiser_maintenance.flag
 
     steps:
     - name: Checkout repository
@@ -16,19 +20,19 @@ jobs:
         mkdir -p ~/.ssh
         echo "${{ secrets.WEBAPP_DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H 165.232.69.153 >> ~/.ssh/known_hosts
+        ssh-keyscan -H ${{ env.DOMAIN }} >> ~/.ssh/known_hosts
 
     - name: Put Site in Maintenance Mode
       run: |
-        ssh deployer@165.232.69.153 << 'EOF'
-          touch /var/www/stats_visualiser/maintenance.flag
+        ssh deployer@${{ env.DOMAIN }} << 'EOF'
+          touch ${{ env.MAINTENANCE_FLAG }}
           sudo systemctl restart nginx
         EOF
 
     - name: Deploy Symfony
       run: |
         ssh deployer@165.232.69.153 << 'EOF'
-          cd /var/www/stats_visualiser
+          cd ${{ env.DEPLOY_PATH }}
           git fetch --all --tags
           git checkout ${{ github.event.deployment.ref }}
 
@@ -37,8 +41,8 @@ jobs:
           php bin/console cache:clear --env=prod
 
 
-          sudo chmod -R 775 /var/www/stats_visualiser/var/*
-          sudo chown -R www-data:www-data /var/www/stats_visualiser
+          sudo chmod -R 775 ${{ env.DEPLOY_PATH }}/var/*
+          sudo chown -R www-data:www-data ${{ env.DEPLOY_PATH }}
 
           php bin/console doctrine:migrations:migrate --no-interaction
           php bin/console cache:warmup --env=prod
@@ -48,7 +52,7 @@ jobs:
 
     - name: Bring Site Back Online
       run: |
-        ssh deployer@165.232.69.153 << 'EOF'
-          rm -f /var/www/stats_visualiser/maintenance.flag
+        ssh deployer@${{ env.DOMAIN }} << 'EOF'
+          rm -f ${{ env.MAINTENANCE_FLAG }}
           sudo systemctl restart nginx
         EOF
