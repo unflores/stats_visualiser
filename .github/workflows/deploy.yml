@@ -9,7 +9,7 @@ jobs:
     env:
       DOMAIN: 165.232.69.153
       DEPLOY_PATH: /var/www/stats_visualiser
-      MAINTENANCE_FLAG: /var/www/stats_visualiser_maintenance.flag
+      MAINTENANCE_FLAG: /var/www/maintenance/stats_visualiser.flag
 
     steps:
     - name: Checkout repository
@@ -39,7 +39,6 @@ jobs:
           composer install --no-interaction --no-dev --optimize-autoloader
 
           php bin/console cache:clear --env=prod
-
 
           sudo chmod -R 775 ${{ env.DEPLOY_PATH }}/var/*
           sudo chown -R www-data:www-data ${{ env.DEPLOY_PATH }}
