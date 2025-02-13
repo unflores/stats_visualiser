@@ -17,7 +17,7 @@ final class Version20250206105138 extends AbstractMigration
 
     public function up(Schema $schema): void
     {
-        clear
+        
         $this->addSql('CREATE TEMPORARY TABLE __temp__theme AS SELECT id, parent_id FROM theme');
         $this->addSql('DROP TABLE theme');
         $this->addSql('CREATE TABLE theme (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, parent_id INTEGER DEFAULT NULL, code VARCHAR(255) NOT NULL, is_section BOOLEAN NOT NULL, external_id VARCHAR(255) NOT NULL)');

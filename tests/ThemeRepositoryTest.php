@@ -53,6 +53,4 @@ class ThemeRepositoryTest extends KernelTestCase
         $this->entityManager->flush();
         $this->assertNotNull($child->getId());
     }
-
-    
 }
