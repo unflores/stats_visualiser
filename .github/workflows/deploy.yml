@@ -37,7 +37,7 @@ jobs:
           php bin/console cache:clear --env=prod
 
 
-          sudo chmod -R 775 /var/www/stats_visualiser/*
+          sudo chmod -R 775 /var/www/stats_visualiser/var/*
           sudo chown -R www-data:www-data /var/www/stats_visualiser
 
           php bin/console doctrine:migrations:migrate --no-interaction
