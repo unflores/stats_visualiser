@@ -27,3 +27,7 @@ phpunit.xml.old
 
 script_memoire.txt
 .phpunit.cache
+###> symfony/asset-mapper ###
+/public/assets/
+/assets/vendor/
+###< symfony/asset-mapper ###
