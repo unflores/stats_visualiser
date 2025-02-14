@@ -1,7 +1,8 @@
 name: Deploy Application
 
 on:
-  deployment
+  release:
+    types: [created]
 
 jobs:
   deploy:
@@ -34,7 +35,7 @@ jobs:
         ssh deployer@165.232.69.153 << 'EOF'
           cd ${{ env.DEPLOY_PATH }}
           git fetch --all --tags
-          git checkout ${{ github.event.deployment.ref }}
+          git checkout ${{ github.event.release.tag_name }}
 
           composer install --no-interaction --no-dev --optimize-autoloader
 
