@@ -41,12 +41,14 @@ jobs:
 
           php bin/console cache:clear --env=prod
 
+          php bin/console doctrine:migrations:migrate --no-interaction
+          php bin/console tailwind:build --minify
+          php bin/console asset-map:compile
+
+          php bin/console cache:warmup --env=prod
+
           sudo chmod -R 775 ${{ env.DEPLOY_PATH }}/var/*
           sudo chown -R www-data:www-data ${{ env.DEPLOY_PATH }}
-
-          php bin/console doctrine:migrations:migrate --no-interaction
-          php bin/console tailwind:build
-          php bin/console cache:warmup --env=prod
 
           sudo systemctl restart php8.3-fpm
         EOF
