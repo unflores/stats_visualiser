@@ -44,6 +44,7 @@ jobs:
           sudo chown -R www-data:www-data ${{ env.DEPLOY_PATH }}
 
           php bin/console doctrine:migrations:migrate --no-interaction
+          php bin/console tailwind:build
           php bin/console cache:warmup --env=prod
 
           sudo systemctl restart php8.3-fpm
