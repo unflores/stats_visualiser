@@ -1,4 +1,0 @@
-<?php 
-
-
-//PHPOffice/PhpSpreadsheet
