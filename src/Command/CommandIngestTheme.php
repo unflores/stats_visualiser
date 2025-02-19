@@ -61,7 +61,7 @@ class CommandIngestTheme extends Command
             return Command::FAILURE;
         }
 
-        $io->success('List how many themes have been added '. count($IngestTheme->GetJsonDataFileXlsx($filePath)) . ' themes');
+        $io->success('List how many themes have been added '.count($IngestTheme->GetJsonDataFileXlsx($filePath)).' themes');
 
         return Command::SUCCESS;
     }
