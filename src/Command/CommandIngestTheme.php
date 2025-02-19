@@ -28,7 +28,7 @@ class CommandIngestTheme extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('getjson', InputArgument::OPTIONAL, 'obtenir les données json')
+            ->addArgument('addThemes', InputArgument::OPTIONAL, 'ajouter les themes dans le fichier themes.json')
             ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
         ;
     }
@@ -36,7 +36,7 @@ class CommandIngestTheme extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('getjson');
+        $arg1 = $input->getArgument('addThemes');
 
         $IngestTheme = new IngestTheme();
 
@@ -44,8 +44,7 @@ class CommandIngestTheme extends Command
             $io->note(sprintf('You passed an argument: %s', $arg1));
         }
 
-        // Assurez-vous que le chemin du fichier est correct et que le fichier est au format .xlsx
-        $filePath = $this->projectDir.'/public/File/CITEPA.xlsx'; // Remplacez par le chemin correct
+        $filePath = $this->projectDir.'/public/File/CITEPA.xlsx';
         if (!file_exists($filePath)) {
             $io->error('Le fichier n\'existe pas : '.$filePath);
 

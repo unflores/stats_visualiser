@@ -45,16 +45,6 @@ class IngestTheme
         return $word;
     }
 
-    public function makeExternalValue(array $data, string $id): mixed
-    {
-        // initialisation des variables
-        $hierarchie = [];
-
-        // -cherche la valeur  de V0  dans le tableau data
-
-        return [$hierarchie];
-    }
-
     private static function gethierarchieLevels(string $level): mixed
     {
         $hierarchie = [];
@@ -140,14 +130,15 @@ class IngestTheme
         $file = $filePath ?? '/default/path/to/Theme.json';
         $categories_id = $this->getCategoriesId($data);
 
-        $themes = ['id', 'code', 'externalId', 'isSection', 'parentId'];
+        $themes = [];
         $dir = dirname($file);
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
         }
-        for ($i = 0; $i < count($categories_id); ++$i) {
+        $y = 1;
+        for ($i = 0; $i < count($categories_id); ++$i, ++$y) {
             $themes[] = [
-                'id' => $i,
+                'id' => $y,
                 'code' => $this->getCodeConcatenateByID($data, $categories_id[$i]),
                 'externalId' => $categories_id[$i],
                 'isSection' => true,
