@@ -2,7 +2,7 @@
 
 namespace App\Controller\Api;
 
-use App\Script\IngestTheme;
+use App\Script\SaveTheme;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -38,17 +38,15 @@ final class ThemesController extends AbstractController
         ]);
     }
 
-    #[Route('/test', name: 'app_test')]
-    public function testXls(): mixed
+    #[Route('/test', name: 'app_themes', methods: ['GET'])]
+    public function test(): JsonResponse
     {
-        $ingestTheme = new IngestTheme();
-        $file = $this->getParameter('kernel.project_dir').'/public/File/CITEPA.xlsx';
+        // code...
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $file = $projectDir.'/public/File/themes.json';
+        $saveTheme = new SaveTheme();
+        $result = $saveTheme->saveOnDatabase($file);
 
-        if (!file_exists($file)) {
-            return new JsonResponse(['erreur' => 'File not found '.$file], 404);
-        }
-        $data = $ingestTheme->GetJsonDataFileXlsx($file);
-
-        return new JsonResponse($data, 200, [], false);
+        return $this->json([count($result), $result]);
     }
 }

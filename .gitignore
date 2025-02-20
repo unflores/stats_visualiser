@@ -31,3 +31,4 @@ script_memoire.txt
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+.DS_Store
