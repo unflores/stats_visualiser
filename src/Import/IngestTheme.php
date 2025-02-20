@@ -1,20 +1,25 @@
 <?php
 
-namespace App\Script;
+namespace App\Import;
 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class IngestTheme
-{
-    public function GetJsonDataFileXlsx(string $file): mixed
+{ 
+    /**
+     * Get Themes From Excel File
+     *
+     * @param  mixed $excel file 
+     * @return array themes import from the excel file
+     */
+    public function GetThemesFromExcelFile(string $excel_file): array
     {
-        $data = [];
-
-        if (!file_exists($file)) {
-            return ['File not found'];
+        $themes = [];
+        if (!file_exists($excel_file)) {
+            return ['Excel File not found'];
         }
-        $spreadsheet = IOFactory::load($file);
+        $spreadsheet = IOFactory::load($excel_file);
         $sheet = $spreadsheet->getActiveSheet();
 
         $newSpreadsheet = new Spreadsheet();
@@ -26,26 +31,31 @@ class IngestTheme
             $cellB = $sheet->getCell('B'.$rowIndex)->getValue();
             if (null !== $cellA && null !== $cellB) {
                 if ($rowIndex > 2) {
-                    $data[] = [
+                    $themes[] = [
                         'categories_id' => $cellB,
-                        'categories' => $this->makeSpace($cellA),
+                        'categories' => $this->replaceSpaceByUnderscore($cellA),
                     ];
                 }
             }
         }
-
-        return $data;
+        return $themes;
     }
-
-    private function makeSpace(string $word): string
+    
+    /**
+     * 
+     * replace the underscore 
+     * to space between the word or word group 
+     * @param  string $word
+     * @return string 
+     */
+    private function replaceSpaceByUnderscore(string $word): string
     {
         $word = str_replace('/', 'et ', $word);
         $word = str_replace(' ', '_', $word);
-
         return $word;
     }
 
-    private static function gethierarchieLevels(string $level): mixed
+    private static function getHierarchieLevels(string $level): mixed
     {
         $hierarchie = [];
         $check_dot = strpos($level, '.');
@@ -56,51 +66,47 @@ class IngestTheme
                 $hierarchie[] = implode('.', $level_array);
                 array_pop($level_array);
             }
-
             return array_reverse($hierarchie);
         } else {
             return [$level];
         }
     }
 
-    public static function getCategoriesById(array $data, string $id): string
+    private static function getCategoriesByCategorieId(array $themes, string $categorie_id): string
     {
-        foreach ($data as $item) {
-            if ($item['categories_id'] === $id) {
-                return $item['categories'];
+        foreach ($themes as $theme) {
+            if ($theme['categories_id'] === $categorie_id) {
+                return $theme['categories'];
             }
         }
-
         return '';
     }
 
-    public static function getIdByCategorie(array $data, string $categorie): string
+    //cette function n'est pas appellé
+    /*private static function getCategorieIdByCategorie(array $themes, string $categorie): string
     {
-        foreach ($data as $item) {
-            if ($item['categories'] === $categorie) {
-                return $item['categories_id'];
+        foreach ($themes as $theme) {
+            if ($theme['categories'] === $categorie) {
+                return $theme['categories_id'];
             }
         }
-
         return '';
-    }
+    }*/
 
-    public function getCodeConcatenateByID(array $data, string $id): string
+    private function getCodeConcatenateByCategorieId(array $themes, string $level_id): string
     {
         $levels = [];
         $hierarchie = [];
-        $levels = $this::gethierarchieLevels($id);
-        foreach ($levels as $value) {
-            $hierarchie[] = $this::getCategoriesById($data, $value);
+        $levels = $this::gethierarchieLevels($level_id);
+        foreach ($levels as $level) {
+            $hierarchie[] = $this::getCategoriesByCategorieId($themes, $level);
         }
-
         return implode('.', $hierarchie);
     }
 
-    public function getParentIdByChildId(string $ChildId): mixed
+    private function getParentIdByChildId(string $ChildId): mixed
     {
         $check_dot = strpos($ChildId, '.');
-
         if (false !== $check_dot) {
             $level_array = explode('.', $ChildId);
             while (!empty($level_array)) {
@@ -115,39 +121,28 @@ class IngestTheme
         }
     }
 
-    private function getCategoriesId($data): array
+    private function getCategoriesId($themes): array
     {
         $categories_id = [];
-        foreach ($data as $item) {
-            $categories_id[] = $item['categories_id'];
+        foreach ($themes as $theme) {
+            $categories_id[] = $theme['categories_id'];
         }
-
         return $categories_id;
     }
 
-    public function SaveThemesOnFileJson(array $data, ?string $filePath = null): mixed
+    public function PrepareThemesForDatabase(array $themes): mixed
     {
-        $file = $filePath ?? '/default/path/to/Theme.json';
-        $categories_id = $this->getCategoriesId($data);
-
-        $themes = [];
-        $dir = dirname($file);
-        if (!is_dir($dir)) {
-            mkdir($dir, 0777, true);
-        }
+        $categories_id = $this->getCategoriesId($themes);
+        $themes_json = []; 
         $y = 1;
         for ($i = 0; $i < count($categories_id); ++$i, ++$y) {
-            $themes[] = [
-                'id' => $y,
-                'code' => $this->getCodeConcatenateByID($data, $categories_id[$i]),
+            $themes_json[] = [
+                'code' => $this->getCodeConcatenateByCategorieId($themes, $categories_id[$i]),
                 'externalId' => $categories_id[$i],
                 'isSection' => true,
                 'parentId' => $this->getParentIdByChildId($categories_id[$i]),
             ];
         }
-        $json = json_encode($themes);
-        file_put_contents($file, $json);
-
-        return true;
+        return json_encode($themes_json);
     }
 }
