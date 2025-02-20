@@ -3,13 +3,14 @@
 namespace App\Command;
 
 use App\Script\SaveTheme;
-use Symfony\Component\Console\Attribute\AsCommand;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'SaveThemes',
@@ -19,16 +20,16 @@ class CommandSaveTheme extends Command
 {
     private $projectDir;
 
-    public function __construct(string $projectDir)
+    private $entityManager;
+    public function __construct(string $projectDir, EntityManagerInterface $entityManager)
     {
         $this->projectDir = $projectDir;
+        $this->entityManager = $entityManager;
         parent::__construct();
     }
-
     protected function configure(): void
     {
         $this
-
             ->addArgument('save', InputArgument::OPTIONAL, 'enregistrer les themes dans la base de données')
             ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
         ;
@@ -51,7 +52,10 @@ class CommandSaveTheme extends Command
 
             $file = $this->projectDir.'/public/File/themes.json';
             $result = $saveTheme->saveOnDatabase($file);
-            $io->info('le nombre des themes : '.count($result).' saved');
+            if ($result) {
+                $io->info('le nombre des themes enregistrés ');
+                $io->info('le nombre des themes  : '.count($result).' enregistrés');
+            }
 
             return Command::SUCCESS;
         }

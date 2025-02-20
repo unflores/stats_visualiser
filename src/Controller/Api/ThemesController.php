@@ -41,12 +41,11 @@ final class ThemesController extends AbstractController
     #[Route('/test', name: 'app_themes', methods: ['GET'])]
     public function test(): JsonResponse
     {
-        // code...
         $projectDir = $this->getParameter('kernel.project_dir');
         $file = $projectDir.'/public/File/themes.json';
         $saveTheme = new SaveTheme();
-        $result = $saveTheme->saveOnDatabase($file);
+        $result = $saveTheme->saveDatabase($file);
 
-        return $this->json([count($result), $result]);
+        return $this->json($result);
     }
 }

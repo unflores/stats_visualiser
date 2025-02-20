@@ -25,6 +25,7 @@ services:
     App\Command\CommandSaveTheme:
         bind:
             $projectDir: '%kernel.project_dir%'
+    
         
 
     # add more service definitions when explicit configuration is needed

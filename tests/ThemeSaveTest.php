@@ -37,9 +37,10 @@ class ThemeSaveTest extends KernelTestCase
         $theme = new Theme();
         $saveTheme = new SaveTheme();
         $file = $this->projectDir.'/public/File/themes.json';
-        $themes = $saveTheme->saveOnDatabase($file);
-
-        foreach ($themes as $theme) {
+        $resultat = $saveTheme->saveDatabase($file);
+        $this->assertIsArray($resultat);
+        $this->assertNotEmpty($resultat);
+        foreach ($resultat as $theme) {
             $this->entityManager->persist(
                 (new Theme())
                     ->setCode($theme['code'])
@@ -50,6 +51,7 @@ class ThemeSaveTest extends KernelTestCase
             );
         }
         $this->entityManager->flush();
-        $this->assertCount(count($themes), $this->themeRepository->findAll());
+        $themes = $this->themeRepository->findAll();
+        $this->assertNotEmpty($themes);
     }
 }

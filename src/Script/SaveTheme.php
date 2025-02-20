@@ -7,6 +7,7 @@ use App\Entity\Theme;
 class SaveTheme
 {
     private $entityManager;
+    private $themeRepository;
 
     public function saveOnDatabase(?string $filePath = null): mixed
     {
@@ -27,6 +28,18 @@ class SaveTheme
             );
         }
         $this->entityManager->flush();
+        $themes = $this->themeRepository->findAll();
+
+        return count($themes) > 0 ? true : false;
+    }
+
+    public function saveDatabase(?string $filePath = null): mixed
+    {
+        $file = $filePath ?? '/public/File/themes.json';
+        if (!file_exists($file)) {
+            return ['File not found'];
+        }
+        $data = json_decode(file_get_contents($file), true);
 
         return $data;
     }
