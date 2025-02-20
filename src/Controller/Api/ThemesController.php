@@ -2,7 +2,6 @@
 
 namespace App\Controller\Api;
 
-use App\Script\SaveTheme;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -36,16 +35,5 @@ final class ThemesController extends AbstractController
                 ],
             ],
         ]);
-    }
-
-    #[Route('/test', name: 'app_themes', methods: ['GET'])]
-    public function test(): JsonResponse
-    {
-        $projectDir = $this->getParameter('kernel.project_dir');
-        $file = $projectDir.'/public/File/themes.json';
-        $saveTheme = new SaveTheme();
-        $result = $saveTheme->saveDatabase($file);
-
-        return $this->json($result);
     }
 }

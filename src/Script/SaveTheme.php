@@ -3,11 +3,19 @@
 namespace App\Script;
 
 use App\Entity\Theme;
+use Doctrine\ORM\EntityManagerInterface;
 
 class SaveTheme
 {
     private $entityManager;
     private $themeRepository;
+
+    // ajoute apres les test
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+        $this->themeRepository = $entityManager->getRepository(Theme::class);
+    }
 
     public function saveOnDatabase(?string $filePath = null): mixed
     {

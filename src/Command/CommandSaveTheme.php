@@ -4,13 +4,13 @@ namespace App\Command;
 
 use App\Script\SaveTheme;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
     name: 'SaveThemes',
@@ -21,12 +21,14 @@ class CommandSaveTheme extends Command
     private $projectDir;
 
     private $entityManager;
+
     public function __construct(string $projectDir, EntityManagerInterface $entityManager)
     {
         $this->projectDir = $projectDir;
         $this->entityManager = $entityManager;
         parent::__construct();
     }
+
     protected function configure(): void
     {
         $this
@@ -39,7 +41,7 @@ class CommandSaveTheme extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $arg1 = $input->getArgument('save');
-        $saveTheme = new SaveTheme();
+        $saveTheme = new SaveTheme($this->entityManager);
 
         if ($arg1) {
             $io->note(sprintf('You passed an argument: %s', $arg1));
@@ -54,7 +56,6 @@ class CommandSaveTheme extends Command
             $result = $saveTheme->saveOnDatabase($file);
             if ($result) {
                 $io->info('le nombre des themes enregistrés ');
-                $io->info('le nombre des themes  : '.count($result).' enregistrés');
             }
 
             return Command::SUCCESS;

@@ -35,7 +35,7 @@ class ThemeSaveTest extends KernelTestCase
     public function testSaveImportedThemes(): void
     {
         $theme = new Theme();
-        $saveTheme = new SaveTheme();
+        $saveTheme = new SaveTheme($this->entityManager);
         $file = $this->projectDir.'/public/File/themes.json';
         $resultat = $saveTheme->saveDatabase($file);
         $this->assertIsArray($resultat);
