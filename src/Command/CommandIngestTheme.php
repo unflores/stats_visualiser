@@ -38,7 +38,7 @@ class CommandIngestTheme extends Command
         $io = new SymfonyStyle($input, $output);
         $arg1 = $input->getArgument('addThemes');
 
-        $IngestTheme = new IngestTheme();
+        $IngestTheme = new IngestTheme($this->projectDir.'/public/File/themes.json');
         if ($arg1) {
             $io->note(sprintf('You passed an argument: %s', $arg1));
             $filePath = $this->projectDir.'/public/File/CITEPA.xlsx';
@@ -48,16 +48,13 @@ class CommandIngestTheme extends Command
                 return Command::FAILURE;
             }
 
-            try {
-                $result = $IngestTheme->SaveThemesOnFileJson($IngestTheme->GetJsonDataFileXlsx($filePath), $this->projectDir.'/public/File/themes.json');
-                $io->success('Résultat: '.json_encode($result));
-            } catch (\Exception $e) {
-                $io->error('Erreur lors de la lecture du fichier : '.$e->getMessage());
+            $themes_to_create = $IngestTheme->execute();
+            $io->success('Extracted '. count($themes_to_create).' themes');
 
-                return Command::FAILURE;
-            }
+            $create_themes = new Themes\CreateService();
+            $persisted = $create_themes->execute($themes_to_create);
 
-            $io->success('Congratulated, Themes have been added '.count($IngestTheme->GetJsonDataFileXlsx($filePath)).' themes');
+            $io->success('Persisted '. $persisted .' themes');
 
             return Command::SUCCESS;
         }
