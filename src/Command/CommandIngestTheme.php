@@ -38,7 +38,7 @@ class CommandIngestTheme extends Command
         $io = new SymfonyStyle($input, $output);
         $arg1 = $input->getArgument('addThemes');
 
-        $IngestTheme = new IngestTheme($this->projectDir.'/public/File/themes.json');
+        $themes_extractor = new Themes\ExtractService($this->projectDir.'/public/File/themes.json');
         if ($arg1) {
             $io->note(sprintf('You passed an argument: %s', $arg1));
             $filePath = $this->projectDir.'/public/File/CITEPA.xlsx';
@@ -48,7 +48,7 @@ class CommandIngestTheme extends Command
                 return Command::FAILURE;
             }
 
-            $themes_to_create = $IngestTheme->execute();
+            $themes_to_create = $themes_extractor->execute();
             $io->success('Extracted '. count($themes_to_create).' themes');
 
             $create_themes = new Themes\CreateService();
