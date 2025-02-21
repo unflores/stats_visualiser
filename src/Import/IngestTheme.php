@@ -6,11 +6,10 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class IngestTheme
-{ 
+{
     /**
-     * Get Themes From Excel File
+     * Get Themes From Excel File.
      *
-     * @param  mixed $excel file 
      * @return array themes import from the excel file
      */
     public function GetThemesFromExcelFile(string $excel_file): array
@@ -38,20 +37,19 @@ class IngestTheme
                 }
             }
         }
+
         return $themes;
     }
-    
+
     /**
-     * 
-     * replace the underscore 
-     * to space between the word or word group 
-     * @param  string $word
-     * @return string 
+     * replace the underscore
+     * to space between the word or word group.
      */
     private function replaceSpaceByUnderscore(string $word): string
     {
         $word = str_replace('/', 'et ', $word);
         $word = str_replace(' ', '_', $word);
+
         return $word;
     }
 
@@ -66,6 +64,7 @@ class IngestTheme
                 $hierarchie[] = implode('.', $level_array);
                 array_pop($level_array);
             }
+
             return array_reverse($hierarchie);
         } else {
             return [$level];
@@ -79,10 +78,11 @@ class IngestTheme
                 return $theme['categories'];
             }
         }
+
         return '';
     }
 
-    //cette function n'est pas appellé
+    // cette function n'est pas appellé
     /*private static function getCategorieIdByCategorie(array $themes, string $categorie): string
     {
         foreach ($themes as $theme) {
@@ -101,6 +101,7 @@ class IngestTheme
         foreach ($levels as $level) {
             $hierarchie[] = $this::getCategoriesByCategorieId($themes, $level);
         }
+
         return implode('.', $hierarchie);
     }
 
@@ -127,13 +128,14 @@ class IngestTheme
         foreach ($themes as $theme) {
             $categories_id[] = $theme['categories_id'];
         }
+
         return $categories_id;
     }
 
     public function PrepareThemesForDatabase(array $themes): mixed
     {
         $categories_id = $this->getCategoriesId($themes);
-        $themes_json = []; 
+        $themes_json = [];
         $y = 1;
         for ($i = 0; $i < count($categories_id); ++$i, ++$y) {
             $themes_json[] = [
@@ -143,6 +145,7 @@ class IngestTheme
                 'parentId' => $this->getParentIdByChildId($categories_id[$i]),
             ];
         }
+
         return json_encode($themes_json);
     }
 }
