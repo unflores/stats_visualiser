@@ -3,10 +3,10 @@
 namespace App\Tests;
 
 use App\Entity\Theme;
-use App\Import\IngestTheme;
+use App\Imports\Themes\ExtractService;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class ThemeImportTest extends KernelTestCase
+class ExtractServiceTest extends KernelTestCase
 {
     private $entityManager;
     private $themeRepository;
@@ -34,8 +34,8 @@ class ThemeImportTest extends KernelTestCase
 
     public function testImportThemeSave(): void
     {
-        $ingestthemes = new IngestTheme($this->entityManager, $this->projectDir);
-        $check_table = $ingestthemes->SaveThemesOnDatabase();
+        $ExtractServices = new ExtractService($this->entityManager, $this->projectDir);
+        $check_table = $ExtractServices->SaveThemesOnDatabase();
         if ($check_table) {
             $themes_table = $this->themeRepository->findAll();
             $this->assertNotEmpty($themes_table);

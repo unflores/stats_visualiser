@@ -9,9 +9,6 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api')]
 final class ThemesController extends AbstractController
 {
-    private $entityManager;
-    private $projectDir;
-
     #[Route('/themes', name: 'app_themes', methods: ['GET'])]
     public function index(): JsonResponse
     {

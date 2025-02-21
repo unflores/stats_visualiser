@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Entity;
+namespace App\Tests\Themes\Entity;
 
 use App\Entity\Theme;
 use PHPUnit\Framework\TestCase;

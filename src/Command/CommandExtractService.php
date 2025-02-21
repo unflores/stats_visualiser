@@ -3,7 +3,7 @@
 namespace App\Command;
 
 use App\Entity\Theme;
-use App\Import\IngestTheme;
+use App\Imports\Themes\ExtractService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -13,10 +13,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'importThemes',
+    name: 'ExtractService',
     description: 'Parse themes from excel and import them into the database',
 )]
-class CommandIngestTheme extends Command
+class CommandExtractService extends Command
 {
     private $projectDir;
     private $entityManager;
@@ -33,15 +33,15 @@ class CommandIngestTheme extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('savethemes', InputArgument::OPTIONAL, 'save themes on database themes')
+            ->addArgument('extracthemes', InputArgument::OPTIONAL, 'extract and save themes into database themes')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('savethemes');
-        $ingestTheme = new IngestTheme($this->entityManager, $this->projectDir);
+        $arg1 = $input->getArgument('extracthemes');
+        $ExtractService = new ExtractService($this->entityManager, $this->projectDir);
         if ($arg1) {
             $io->note(sprintf('You passed an argument: %s', $arg1));
             $excel_file = $this->projectDir.'/public/File/emissions_GES_structure.xlsx';
@@ -52,10 +52,8 @@ class CommandIngestTheme extends Command
                 return Command::FAILURE;
             }
             try {
-                $themes = $ingestTheme->PrepareThemesForDatabase($ingestTheme->GetThemesFromExcelFile($excel_file));
-                $themes = json_decode($themes);
-
-                // $io->success('Résultat: '.$ingestTheme->checkThemesEmpty());
+                $themes = [];
+                $themes = $ExtractService->PrepareThemesForDatabase($ExtractService->GetThemesFromExcelFile($excel_file));
             } catch (\Exception $e) {
                 $io->error('Erreur lors de la lecture du fichier : '.$e->getMessage());
 

@@ -10,11 +10,11 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250221003103 extends AbstractMigration
+final class Version20250221095203 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'modify parent_id_column string by integer';
+        return '';
     }
 
     public function up(Schema $schema): void

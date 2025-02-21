@@ -19,7 +19,7 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-    App\Command\CommandIngestTheme:
+    App\Command\CommandExtractService:
         bind:
             $projectDir: '%kernel.project_dir%'
     

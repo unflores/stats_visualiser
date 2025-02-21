@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Import;
+namespace App\Imports\Themes;
 
 use App\Entity\Theme;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
-class IngestTheme
+class ExtractService
 {
     private $projectDir;
     private $entityManager;
@@ -54,10 +54,6 @@ class IngestTheme
         return $themes;
     }
 
-    /**
-     * replace the underscore
-     * to space between the word or word group.
-     */
     private function replaceSpaceByUnderscore(string $word): string
     {
         $word = str_replace('/', 'et ', $word);
@@ -137,10 +133,10 @@ class IngestTheme
     public function PrepareThemesForDatabase(array $themes): mixed
     {
         $categories_id = $this->getCategoriesId($themes);
-        $themes_json = [];
+        $themes_array = [];
 
         for ($i = 0; $i < count($categories_id); ++$i) {
-            $themes_json[] = [
+            $themes_array[] = [
                 'code' => $this->getCodeConcatenateByCategorieId($themes, $categories_id[$i]),
                 'externalId' => $categories_id[$i],
                 'isSection' => true,
@@ -148,7 +144,7 @@ class IngestTheme
             ];
         }
 
-        return json_encode($themes_json);
+        return $themes_array;
     }
 
     public function SaveThemesOnDatabase(): bool
@@ -156,9 +152,8 @@ class IngestTheme
         $array_themes = [];
 
         $excel_file = $this->projectDir.'/public/File/emissions_GES_structure.xlsx';
-        $ingestTheme = new IngestTheme($this->entityManager, $this->projectDir);
-        $array_themes = $ingestTheme->PrepareThemesForDatabase($ingestTheme->GetThemesFromExcelFile($excel_file));
-        $array_themes = json_decode($array_themes, true);
+        $ExtractService = new ExtractService($this->entityManager, $this->projectDir);
+        $array_themes = $ExtractService->PrepareThemesForDatabase($ExtractService->GetThemesFromExcelFile($excel_file));
 
         if (null == $this->findParentId()) {
             foreach ($array_themes as $theme) {

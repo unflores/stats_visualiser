@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Repository;
+namespace App\Tests\Themes\Repository;
 
 use App\Entity\Theme;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
