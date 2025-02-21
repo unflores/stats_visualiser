@@ -22,9 +22,7 @@ services:
     App\Command\CommandIngestTheme:
         bind:
             $projectDir: '%kernel.project_dir%'
-    App\Command\CommandSaveTheme:
-        bind:
-            $projectDir: '%kernel.project_dir%'
+    
     
         
 
