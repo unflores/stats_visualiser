@@ -103,20 +103,16 @@ class ExtractService
         return implode('.', $hierarchie);
     }
 
-    private function getParentIdByChildId(string $ChildId): mixed
+    private function getParentExternalId(string $externalId): mixed
     {
-        $check_dot = strpos($ChildId, '.');
+        $check_dot = strpos($externalId, '.');
         if (false !== $check_dot) {
-            $level_array = explode('.', $ChildId);
-            while (!empty($level_array)) {
-                $hierarchie[] = implode('.', $level_array);
-                array_pop($level_array);
-            }
-            $level_array = array_reverse($hierarchie);
+            $level_array = explode('.', $externalId);
+            array_pop($level_array);
 
-            return $level_array[count($level_array) - 2];
+            return implode('.', $level_array);
         } else {
-            return 'null';
+            return null;
         }
     }
 
@@ -130,17 +126,19 @@ class ExtractService
         return $categories_id;
     }
 
-    public function PrepareThemesForDatabase(array $themes): mixed
+    public function PrepareThemesForDatabase(array $themes): array
     {
         $categories_id = $this->getCategoriesId($themes);
         $themes_array = [];
+        $size = count($categories_id);
 
-        for ($i = 0; $i < count($categories_id); ++$i) {
+        for ($i = 0; $i < $size; ++$i) {
             $themes_array[] = [
+                'id' => $i + 1,
                 'code' => $this->getCodeConcatenateByCategorieId($themes, $categories_id[$i]),
                 'externalId' => $categories_id[$i],
                 'isSection' => true,
-                'parentId' => $this->getParentIdByChildId($categories_id[$i]),
+                'parentExternalId' => $this->getParentExternalId($categories_id[$i]),
             ];
         }
 
@@ -149,59 +147,71 @@ class ExtractService
 
     public function SaveThemesOnDatabase(): bool
     {
-        $array_themes = [];
+        $savedThemes = false;
+        $excelFile = $this->projectDir.'/public/File/emissions_GES_structure.xlsx';
 
-        $excel_file = $this->projectDir.'/public/File/emissions_GES_structure.xlsx';
-        $ExtractService = new ExtractService($this->entityManager, $this->projectDir);
-        $array_themes = $ExtractService->PrepareThemesForDatabase($ExtractService->GetThemesFromExcelFile($excel_file));
+        $extractService = new ExtractService($this->entityManager, $this->projectDir);
+        $arrayThemes = $extractService->PrepareThemesForDatabase(
+            $extractService->GetThemesFromExcelFile($excelFile)
+        );
 
-        if (null == $this->findParentId()) {
-            foreach ($array_themes as $theme) {
-                $this->entityManager->persist(
-                    (new Theme())
-                        ->setCode($theme['code'])
-                        // ->setParentId($theme['parentId'])
-                        ->setExternalId($theme['externalId'])
-                        ->setIsSection($theme['isSection'])
-                );
+        if (empty($arrayThemes)) {
+            return false;
+        }
+
+        foreach ($arrayThemes as $theme) {
+            if (0 === $this->themeRepository->count([])) {
+                $newTheme = (new Theme())
+                ->setCode($theme['code'])
+                ->setExternalId($theme['externalId'])
+                ->setIsSection($theme['isSection'])
+                ->setParentId(null);
+                $this->entityManager->persist($newTheme);
                 $this->entityManager->flush();
-                break;
+                $savedThemes = true;
+            } else {
+                $newTheme = (new Theme())
+                    ->setCode($theme['code'])
+                    ->setExternalId($theme['externalId'])
+                    ->setIsSection($theme['isSection'])
+                    ->setParentId($this->getParentIdByparentExternalId($theme['parentExternalId']));
+                $this->entityManager->persist($newTheme);
+                $this->entityManager->flush();
+                $savedThemes = true;
             }
-
-            return true;
         }
 
-        return false;
+        return $savedThemes;
     }
 
-    private function findParentId(string $externalId = ''): mixed
+    public function checkAllParentIdNotNull(): bool
     {
-        if (empty($this->themeRepository->findAll())) {
-            // la table est vide
-            // premier enregisterement
-            // parentId=null
-            return null;
-        } else {
-            $column = null;
+        $nullCount = $this->themeRepository->createQueryBuilder('t')
+        ->select('COUNT(t.id)')
+        ->where('t.id >= :startId')
+        ->andWhere('t.parentId IS NOT NULL')
+        ->setParameter('startId', 2)
+        ->getQuery()
+        ->getSingleScalarResult();
 
-            // donc on a le premier champs
-            // connaitre le nombre de champs
-            // count = ...
-            return $this->findParentIdByExternalId(); // return parentid
-        }
+        return 0 === $nullCount ? false : true;
     }
 
-    private function findParentIdByExternalId(?string $externalId = ''): int
+    private function getPreviousTheme(): ?Theme
     {
-        $value = $externalId;
-        // on recuperer le premier champs
-        // note champs courants
-        // note : connaitre le nombre total de champs
-        // note all =
-        // check if exist
-        // search it
-        // return its id
+        return $this->themeRepository->findOneBy([], ['id' => 'DESC']);
+    }
 
-        return 0;
+    private function getParentIdByparentExternalId(string $parentExternalId): ?int
+    {
+        $result = $this->entityManager->getRepository(Theme::class)
+        ->createQueryBuilder('t')
+        ->select('t.id')
+        ->where('t.externalId = :externalId')
+        ->setParameter('externalId', $parentExternalId)
+        ->getQuery()
+        ->getOneOrNullResult();
+
+        return $result['id'] ?? null;
     }
 }
