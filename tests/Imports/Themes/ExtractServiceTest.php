@@ -36,8 +36,8 @@ class ExtractServiceTest extends KernelTestCase
     {
         $ExtractServices = new ExtractService($this->entityManager, $this->projectDir);
         $saveThemes = $ExtractServices->SaveThemesOnDatabase();
-        $this->assertTrue($saveThemes, 'themes are not saved');
-        $this->assertEquals(118, $this->themeRepository->count([]), '118 themes not found ! juste '.$this->themeRepository->count([]).' theme(s) found ');
-        $this->assertTrue($ExtractServices->checkAllParentIdNotNull(), 'all parentId are Null');
+        $this->assertTrue($saveThemes, 'themes are saved');
+        $this->assertEquals(118, $this->themeRepository->count([]), $this->themeRepository->count([]).' theme(s) found ');
+        $this->assertTrue($this->themeRepository->checkAllParentIdNotNull(), 'all parentId are not Null');
     }
 }

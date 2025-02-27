@@ -5,7 +5,6 @@ namespace App\Imports\Themes;
 use App\Entity\Theme;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 class ExtractService
 {
@@ -33,9 +32,6 @@ class ExtractService
         }
         $spreadsheet = IOFactory::load($excel_file);
         $sheet = $spreadsheet->getActiveSheet();
-
-        $newSpreadsheet = new Spreadsheet();
-        $newSheet = $newSpreadsheet->getActiveSheet();
 
         foreach ($sheet->getRowIterator() as $row) {
             $rowIndex = $row->getRowIndex();
@@ -174,7 +170,7 @@ class ExtractService
                     ->setCode($theme['code'])
                     ->setExternalId($theme['externalId'])
                     ->setIsSection($theme['isSection'])
-                    ->setParentId($this->getParentIdByparentExternalId($theme['parentExternalId']));
+                    ->setParentId($this->themeRepository->getParentIdByparentExternalId($theme['parentExternalId']));
                 $this->entityManager->persist($newTheme);
                 $this->entityManager->flush();
                 $savedThemes = true;
@@ -184,34 +180,8 @@ class ExtractService
         return $savedThemes;
     }
 
-    public function checkAllParentIdNotNull(): bool
-    {
-        $nullCount = $this->themeRepository->createQueryBuilder('t')
-        ->select('COUNT(t.id)')
-        ->where('t.id >= :startId')
-        ->andWhere('t.parentId IS NOT NULL')
-        ->setParameter('startId', 2)
-        ->getQuery()
-        ->getSingleScalarResult();
-
-        return 0 === $nullCount ? false : true;
-    }
-
     private function getPreviousTheme(): ?Theme
     {
         return $this->themeRepository->findOneBy([], ['id' => 'DESC']);
-    }
-
-    private function getParentIdByparentExternalId(string $parentExternalId): ?int
-    {
-        $result = $this->entityManager->getRepository(Theme::class)
-        ->createQueryBuilder('t')
-        ->select('t.id')
-        ->where('t.externalId = :externalId')
-        ->setParameter('externalId', $parentExternalId)
-        ->getQuery()
-        ->getOneOrNullResult();
-
-        return $result['id'] ?? null;
     }
 }

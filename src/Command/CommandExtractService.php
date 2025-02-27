@@ -33,17 +33,16 @@ class CommandExtractService extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('extracthemes', InputArgument::OPTIONAL, 'extract and save themes into database themes')
-        ;
+            ->addArgument('extracthemes', InputArgument::OPTIONAL, 'extract and save themes into database themes');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('extracthemes');
+        $extracthemes = $input->getArgument('extracthemes');
         $ExtractService = new ExtractService($this->entityManager, $this->projectDir);
-        if ($arg1) {
-            $io->note(sprintf('You passed an argument: %s', $arg1));
+
+        if ($extracthemes) {
             $excel_file = $this->projectDir.'/public/File/emissions_GES_structure.xlsx';
 
             if (!file_exists($excel_file)) {
@@ -52,7 +51,6 @@ class CommandExtractService extends Command
                 return Command::FAILURE;
             }
             try {
-                $themes = [];
                 $themes = $ExtractService->PrepareThemesForDatabase($ExtractService->GetThemesFromExcelFile($excel_file));
                 $io->info(count($themes).' themes extracted');
 
@@ -70,5 +68,10 @@ class CommandExtractService extends Command
         }
 
         return Command::SUCCESS;
+    }
+
+    private function resetThemetable()
+    {
+        $this->themeRepository->resetThemeTable();
     }
 }
