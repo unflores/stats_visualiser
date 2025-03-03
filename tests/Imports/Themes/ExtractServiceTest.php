@@ -40,9 +40,8 @@ class ExtractServiceTest extends KernelTestCase
         $preparedThemes = $ExtractServices->PrepareThemesForDatabase($themes);
         $saveThemes = $ExtractServices->SaveThemesOnDatabase($preparedThemes);
 
-
         $this->assertTrue($saveThemes, 'themes are saved');
         $this->assertTrue($this->themeRepository->isFirstThemeParentIdNull(), 'first theme has ParentId : null');
-        $this->assertTrue($this->themeRepository->isAllThemesParentIdAreNotNull(), "The parentId for all themes is not null, except for the first theme.");
+        $this->assertTrue($this->themeRepository->isAllThemesParentIdAreNotNull(), 'The parentId for all themes is not null, except for the first theme.');
     }
 }

@@ -39,24 +39,25 @@ class ThemeRepository extends ServiceEntityRepository
 
         return null !== $firstTheme && null === $firstTheme['parentId'];
     }
+
     public function isAllThemesParentIdAreNotNull(): bool
     {
         $isAllThemesParentId = true;
 
         $parentIds = $this->createQueryBuilder('theme')
             ->select('theme.parentId')
-            ->orderBy('theme.id', 'ASC') 
-            ->setFirstResult(1) 
+            ->orderBy('theme.id', 'ASC')
+            ->setFirstResult(1)
             ->getQuery()
             ->getResult();
 
         foreach ($parentIds as $parentId) {
-            if ($parentId['parentId'] === null) {
+            if (null === $parentId['parentId']) {
                 $isAllThemesParentId = false;
                 break;
             }
         }
-    
-        return $isAllThemesParentId; 
+
+        return $isAllThemesParentId;
     }
 }

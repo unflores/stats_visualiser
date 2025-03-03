@@ -53,13 +53,15 @@ class CommandExtractService extends Command
             try {
                 $themes = $ExtractService->PrepareThemesForDatabase($ExtractService->GetThemesFromExcelFile($excel_file));
                 $io->info(count($themes).' themes extracted');
+                $get_themes_from_file = $ExtractService->GetThemesFromExcelFile($excel_file);
+                $prepared_themes = $ExtractService->PrepareThemesForDatabase($get_themes_from_file);
+                $save_themes = $ExtractService->SaveThemesOnDatabase($prepared_themes);
 
-                $saved = $ExtractService->SaveThemesOnDatabase();
-                if ($saved) {
-                    $io->info($this->themeRepository->count([]).' themes saved');
+                if ($save_themes) {
+                    $io->info($this->themeRepository->count([]).' themes are saved successfuly');
                 }
             } catch (\Exception $e) {
-                $io->error('Erreur lors de la lecture du fichier : '.$e->getMessage());
+                $io->error('File Excel failed to read : '.$e->getMessage());
 
                 return Command::FAILURE;
             }
@@ -68,10 +70,5 @@ class CommandExtractService extends Command
         }
 
         return Command::SUCCESS;
-    }
-
-    private function resetThemetable()
-    {
-        $this->themeRepository->resetThemeTable();
     }
 }
