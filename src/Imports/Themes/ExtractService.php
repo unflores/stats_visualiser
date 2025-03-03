@@ -141,15 +141,15 @@ class ExtractService
         return $themes_array;
     }
 
-    public function SaveThemesOnDatabase(): bool
+    public function SaveThemesOnDatabase(array $arrayThemes): bool
     {
         $savedThemes = false;
-        $excelFile = $this->projectDir.'/public/File/emissions_GES_structure.xlsx';
+        //$excelFile = $this->projectDir.'/public/File/emissions_GES_structure.xlsx';
 
-        $extractService = new ExtractService($this->entityManager, $this->projectDir);
+        /*$extractService = new ExtractService($this->entityManager, $this->projectDir);
         $arrayThemes = $extractService->PrepareThemesForDatabase(
             $extractService->GetThemesFromExcelFile($excelFile)
-        );
+        ); */
 
         if (empty($arrayThemes)) {
             return false;
@@ -180,8 +180,5 @@ class ExtractService
         return $savedThemes;
     }
 
-    private function getPreviousTheme(): ?Theme
-    {
-        return $this->themeRepository->findOneBy([], ['id' => 'DESC']);
-    }
+    
 }
