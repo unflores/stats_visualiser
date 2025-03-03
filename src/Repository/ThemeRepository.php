@@ -15,7 +15,6 @@ class ThemeRepository extends ServiceEntityRepository
         parent::__construct($registry, Theme::class);
     }
 
-
     public function getParentIdByparentExternalId(string $parentExternalId): ?int
     {
         $result = $this
@@ -28,6 +27,7 @@ class ThemeRepository extends ServiceEntityRepository
 
         return $result['id'] ?? null;
     }
+
     public function isFirstThemeParentIdNull(): bool
     {
         $firstTheme = $this->createQueryBuilder('theme')
@@ -37,6 +37,26 @@ class ThemeRepository extends ServiceEntityRepository
         ->getQuery()
         ->getOneOrNullResult();
 
-    return $firstTheme !== null  && $firstTheme['parentId'] === null ;
+        return null !== $firstTheme && null === $firstTheme['parentId'];
+    }
+    public function isAllThemesParentIdAreNotNull(): bool
+    {
+        $isAllThemesParentId = true;
+
+        $parentIds = $this->createQueryBuilder('theme')
+            ->select('theme.parentId')
+            ->orderBy('theme.id', 'ASC') 
+            ->setFirstResult(1) 
+            ->getQuery()
+            ->getResult();
+
+        foreach ($parentIds as $parentId) {
+            if ($parentId['parentId'] === null) {
+                $isAllThemesParentId = false;
+                break;
+            }
+        }
+    
+        return $isAllThemesParentId; 
     }
 }

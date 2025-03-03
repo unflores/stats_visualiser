@@ -144,7 +144,7 @@ class ExtractService
     public function SaveThemesOnDatabase(array $arrayThemes): bool
     {
         $savedThemes = false;
-        //$excelFile = $this->projectDir.'/public/File/emissions_GES_structure.xlsx';
+        // $excelFile = $this->projectDir.'/public/File/emissions_GES_structure.xlsx';
 
         /*$extractService = new ExtractService($this->entityManager, $this->projectDir);
         $arrayThemes = $extractService->PrepareThemesForDatabase(
@@ -179,6 +179,4 @@ class ExtractService
 
         return $savedThemes;
     }
-
-    
 }
