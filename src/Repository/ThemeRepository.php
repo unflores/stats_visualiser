@@ -15,18 +15,6 @@ class ThemeRepository extends ServiceEntityRepository
         parent::__construct($registry, Theme::class);
     }
 
-    public function checkAllParentIdNotNull(): bool
-    {
-        $nullCount = $this->createQueryBuilder('t')
-        ->select('COUNT(t.id)')
-        ->where('t.id >= :startId')
-        ->andWhere('t.parentId IS NOT NULL')
-        ->setParameter('startId', 2)
-        ->getQuery()
-        ->getSingleScalarResult();
-
-        return 0 === $nullCount ? false : true;
-    }
 
     public function getParentIdByparentExternalId(string $parentExternalId): ?int
     {
@@ -39,5 +27,16 @@ class ThemeRepository extends ServiceEntityRepository
         ->getOneOrNullResult();
 
         return $result['id'] ?? null;
+    }
+    public function isFirstThemeParentIdNull(): bool
+    {
+        $firstTheme = $this->createQueryBuilder('theme')
+        ->select('theme.parentId')
+        ->orderBy('theme.id', 'ASC')
+        ->setMaxResults(1)
+        ->getQuery()
+        ->getOneOrNullResult();
+
+    return $firstTheme !== null  && $firstTheme['parentId'] === null ;
     }
 }
