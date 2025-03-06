@@ -5,7 +5,7 @@ namespace App\Imports\Themes;
 use App\Entity\Theme;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-
+use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 class ExtractService
 {
     private $entityManager;
@@ -26,7 +26,9 @@ class ExtractService
     {
         $themes = [];
         if (!file_exists($excel_file)) {
-            return ['Excel File not found'];
+            throw new FileNotFoundException(
+                sprintf('Excel file "%s" not found', $excel_file)
+            );
         }
         $spreadsheet = IOFactory::load($excel_file);
         $sheet = $spreadsheet->getActiveSheet();
@@ -86,12 +88,12 @@ class ExtractService
             $theme_to_write = $existing_theme ?? (new Theme())->setExternalId($theme['externalId']);
             $external_id = $theme_to_write->getExternalId();
             $parent_external_id = $this->getParentExternalId($external_id);
-            $parent_id = $this->themeRepository->getIdByExternalId($parent_external_id);
+            $parent_theme = $this->themeRepository->findOneBy(['externalId' => $parent_external_id]);
 
             $theme_to_write
                 ->setName($theme['name'])
                 ->setIsSection($theme['isSection'])
-                ->setParentId($parent_id);
+                ->setParentId($parent_theme ? $parent_theme->getId() : null);
 
             $this->entityManager->persist($theme_to_write);
             $this->entityManager->flush();
