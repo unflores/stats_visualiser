@@ -5,7 +5,8 @@
 /.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
-/var/
+/var/*
+!/var/import-data/.gitkeep
 /vendor/
 ###< symfony/framework-bundle ###
 
@@ -30,6 +31,8 @@ phpunit.xml.old
 /public/assets/
 /assets/vendor/
 ###< symfony/asset-mapper ###
+
+public/File/emissions_GES_structure.xlsx
 
 
 
