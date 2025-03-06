@@ -55,11 +55,11 @@ class CommandExtractService extends Command
                 $extracted_themes = $extract_service->GetThemesFromExcelFile($excel_file);
                 $io->info(count($extracted_themes).' themes extracted');
                 $prepared_themes = $extract_service->PrepareThemesForDatabase($extracted_themes);
-                $save_themes = $extract_service->SaveThemesOnDatabase($prepared_themes);
+                $saved_themes_count = $extract_service->SaveThemesOnDatabase($prepared_themes);
 
-                if ($save_themes) {
-                    $io->info($this->themeRepository->count([]).' themes are saved successfuly');
-                }
+
+                $io->info("$saved_themes_count themes were upserted successfuly");
+
             } catch (\Exception $e) {
                 $io->error('File Excel failed to read : '.$e->getMessage());
 

@@ -38,9 +38,14 @@ class ExtractServiceTest extends KernelTestCase
         $excel_file = $this->projectDir.'/var/import-data/emissions_GES_structure.xlsx';
         $themes = $ExtractServices->GetThemesFromExcelFile($excel_file);
         $preparedThemes = $ExtractServices->PrepareThemesForDatabase($themes);
-        $saveThemes = $ExtractServices->SaveThemesOnDatabase($preparedThemes);
+        $savedThemesCount = $ExtractServices->SaveThemesOnDatabase($preparedThemes);
 
-        $this->assertTrue($saveThemes, 'themes are saved');
+        $this->assertEquals(
+            $savedThemesCount,
+            count($preparedThemes),
+            "Themes are saved"
+        );
+
         $this->assertEquals(
             1,
             count($this->themeRepository->findBy(['parentId' => null])),

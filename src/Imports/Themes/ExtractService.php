@@ -40,12 +40,14 @@ class ExtractService
             if (null !== $name && null !== $external_id) {
                 if ($rowIndex > 2) {
                     $themes[] = [
-                        'categories_id' => $external_id,
-                        'categories' => $name,
+                        'externalId' => $external_id,
+                        'name' => $name,
                     ];
                 }
             }
         }
+
+
 
         return $themes;
     }
@@ -67,22 +69,16 @@ class ExtractService
     {
         return array_map(function($theme) {
             return [
-                'name' => $theme['categories'],
-                'externalId' => $theme['categories_id'],
+                'name' => $theme['name'],
+                'externalId' => $theme['externalId'],
                 'isSection' => true,
-                'parentExternalId' => $this->getParentExternalId($theme['categories_id']),
+                'parentExternalId' => $this->getParentExternalId($theme['externalId']),
             ];
         }, $themes);
     }
 
-    public function SaveThemesOnDatabase(array $arrayThemes): bool
+    public function SaveThemesOnDatabase(array $arrayThemes): int
     {
-        $savedThemes = false;
-
-        if (empty($arrayThemes)) {
-            return false;
-        }
-
         foreach ($arrayThemes as $theme) {
             $existing_theme = $this->themeRepository->findOneBy(['externalId' => $theme['externalId']]);
             $theme_to_write = $existing_theme ?? (new Theme())->setExternalId($theme['externalId']);
@@ -97,9 +93,8 @@ class ExtractService
 
             $this->entityManager->persist($theme_to_write);
             $this->entityManager->flush();
-            $savedThemes = true;
         }
 
-        return $savedThemes;
+        return count($arrayThemes);
     }
 }
