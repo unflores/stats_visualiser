@@ -8,15 +8,13 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class ExtractService
 {
-    private $projectDir;
     private $entityManager;
     private $themeRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, string $projectDir)
+    public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
         $this->themeRepository = $entityManager->getRepository(Theme::class);
-        $this->projectDir = $projectDir;
     }
 
     /**

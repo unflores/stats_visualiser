@@ -34,7 +34,7 @@ class ExtractServiceTest extends KernelTestCase
 
     public function testImportThemeSave(): void
     {
-        $ExtractServices = new ExtractService($this->entityManager, $this->projectDir);
+        $ExtractServices = new ExtractService($this->entityManager);
         $excel_file = $this->projectDir.'/public/File/emissions_GES_structure.xlsx';
         $themes = $ExtractServices->GetThemesFromExcelFile($excel_file);
         $preparedThemes = $ExtractServices->PrepareThemesForDatabase($themes);

@@ -40,7 +40,7 @@ class CommandExtractService extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $extracthemes = $input->getArgument('extracthemes');
-        $extract_service = new ExtractService($this->entityManager, $this->projectDir);
+        $extract_service = new ExtractService($this->entityManager);
 
         if ($extracthemes) {
             $excel_file = $this->projectDir.'/public/File/emissions_GES_structure.xlsx';
