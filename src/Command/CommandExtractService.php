@@ -40,7 +40,7 @@ class CommandExtractService extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $extracthemes = $input->getArgument('extracthemes');
-        $ExtractService = new ExtractService($this->entityManager, $this->projectDir);
+        $extract_service = new ExtractService($this->entityManager, $this->projectDir);
 
         if ($extracthemes) {
             $excel_file = $this->projectDir.'/public/File/emissions_GES_structure.xlsx';
@@ -50,12 +50,12 @@ class CommandExtractService extends Command
 
                 return Command::FAILURE;
             }
+
             try {
-                $themes = $ExtractService->PrepareThemesForDatabase($ExtractService->GetThemesFromExcelFile($excel_file));
-                $io->info(count($themes).' themes extracted');
-                $get_themes_from_file = $ExtractService->GetThemesFromExcelFile($excel_file);
-                $prepared_themes = $ExtractService->PrepareThemesForDatabase($get_themes_from_file);
-                $save_themes = $ExtractService->SaveThemesOnDatabase($prepared_themes);
+                $extracted_themes = $extract_service->GetThemesFromExcelFile($excel_file);
+                $io->info(count($extracted_themes).' themes extracted');
+                $prepared_themes = $extract_service->PrepareThemesForDatabase($extracted_themes);
+                $save_themes = $extract_service->SaveThemesOnDatabase($prepared_themes);
 
                 if ($save_themes) {
                     $io->info($this->themeRepository->count([]).' themes are saved successfuly');
