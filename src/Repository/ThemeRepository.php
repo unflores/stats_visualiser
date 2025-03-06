@@ -15,13 +15,13 @@ class ThemeRepository extends ServiceEntityRepository
         parent::__construct($registry, Theme::class);
     }
 
-    public function getParentIdByparentExternalId(?string $parentExternalId): ?int
+    public function getIdByExternalId(?string $externalId): ?int
     {
         $result = $this
         ->createQueryBuilder('t')
         ->select('t.id')
         ->where('t.externalId = :externalId')
-        ->setParameter('externalId', $parentExternalId)
+        ->setParameter('externalId', $externalId)
         ->getQuery()
         ->getOneOrNullResult();
 

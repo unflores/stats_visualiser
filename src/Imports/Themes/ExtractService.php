@@ -48,7 +48,7 @@ class ExtractService
         return $themes;
     }
 
-    private function getParentExternalId(string $externalId): mixed
+    private function getParentExternalId(string $externalId): ?string
     {
         $check_dot = strpos($externalId, '.');
         if (false !== $check_dot) {
@@ -82,15 +82,20 @@ class ExtractService
         }
 
         foreach ($arrayThemes as $theme) {
-            $newTheme = (new Theme())
+            $existing_theme = $this->themeRepository->findOneBy(['externalId' => $theme['externalId']]);
+            $theme_to_write = $existing_theme ?? (new Theme())->setExternalId($theme['externalId']);
+            $external_id = $theme_to_write->getExternalId();
+            $parent_external_id = $this->getParentExternalId($external_id);
+            $parent_id = $this->themeRepository->getIdByExternalId($parent_external_id);
+
+            $theme_to_write
                 ->setName($theme['name'])
-                ->setExternalId($theme['externalId'])
                 ->setIsSection($theme['isSection'])
-                ->setParentId($this->themeRepository->getParentIdByparentExternalId($theme['parentExternalId']));
-            $this->entityManager->persist($newTheme);
+                ->setParentId($parent_id);
+
+            $this->entityManager->persist($theme_to_write);
             $this->entityManager->flush();
             $savedThemes = true;
-
         }
 
         return $savedThemes;
