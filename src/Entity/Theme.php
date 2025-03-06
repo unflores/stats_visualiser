@@ -17,7 +17,7 @@ class Theme
     private ?int $parentId = null;
 
     #[ORM\Column(length: 255, nullable: false, unique: true)]
-    private ?string $code;
+    private ?string $name;
 
     #[ORM\Column(nullable: false)]
     private ?bool $isSection;
@@ -49,14 +49,14 @@ class Theme
         return $this;
     }
 
-    public function getCode(): ?string
+    public function getName(): ?string
     {
-        return $this->code;
+        return $this->name;
     }
 
-    public function setCode(string $code): static
+    public function setName(string $name): static
     {
-        $this->code = $code;
+        $this->name = $name;
 
         return $this;
     }
