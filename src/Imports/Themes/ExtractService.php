@@ -87,7 +87,7 @@ class ExtractService
         return '';
     }
 
-    private function getCodeConcatenateByCategorieId(array $themes, string $level_id): string
+    private function getNameConcatenateByCategorieId(array $themes, string $level_id): string
     {
         $levels = [];
         $hierarchie = [];
@@ -131,7 +131,7 @@ class ExtractService
         for ($i = 0; $i < $size; ++$i) {
             $themes_array[] = [
                 'id' => $i + 1,
-                'code' => $this->getCodeConcatenateByCategorieId($themes, $categories_id[$i]),
+                'name' => $this->getNameConcatenateByCategorieId($themes, $categories_id[$i]),
                 'externalId' => $categories_id[$i],
                 'isSection' => true,
                 'parentExternalId' => $this->getParentExternalId($categories_id[$i]),
@@ -144,12 +144,6 @@ class ExtractService
     public function SaveThemesOnDatabase(array $arrayThemes): bool
     {
         $savedThemes = false;
-        // $excelFile = $this->projectDir.'/public/File/emissions_GES_structure.xlsx';
-
-        /*$extractService = new ExtractService($this->entityManager, $this->projectDir);
-        $arrayThemes = $extractService->PrepareThemesForDatabase(
-            $extractService->GetThemesFromExcelFile($excelFile)
-        ); */
 
         if (empty($arrayThemes)) {
             return false;
@@ -158,7 +152,7 @@ class ExtractService
         foreach ($arrayThemes as $theme) {
             if (0 === $this->themeRepository->count([])) {
                 $newTheme = (new Theme())
-                ->setCode($theme['code'])
+                ->setName($theme['name'])
                 ->setExternalId($theme['externalId'])
                 ->setIsSection($theme['isSection'])
                 ->setParentId(null);
@@ -167,7 +161,7 @@ class ExtractService
                 $savedThemes = true;
             } else {
                 $newTheme = (new Theme())
-                    ->setCode($theme['code'])
+                    ->setName($theme['name'])
                     ->setExternalId($theme['externalId'])
                     ->setIsSection($theme['isSection'])
                     ->setParentId($this->themeRepository->getParentIdByparentExternalId($theme['parentExternalId']));
