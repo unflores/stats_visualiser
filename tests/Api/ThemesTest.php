@@ -2,11 +2,11 @@
 
 namespace App\Tests;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Entity\Theme;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+
 class ThemesTest extends WebTestCase
 {
-
     private $client;
     private $themeRepository;
     private $entityManager;
@@ -15,7 +15,6 @@ class ThemesTest extends WebTestCase
     {
         parent::setUp();
         $this->client = static::createClient();
-
 
         $container = static::getContainer();
         $this->entityManager = $container->get('doctrine.orm.entity_manager');

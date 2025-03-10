@@ -2,10 +2,11 @@
 
 namespace App\Controller\Api;
 
+use App\Repository\ThemeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Repository\ThemeRepository;
+
 #[Route('/api')]
 final class ThemesController extends AbstractController
 {

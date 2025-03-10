@@ -85,7 +85,7 @@ class ThemeRepositoryTest extends KernelTestCase
 
         $themes = $this->themeRepository->findAllHierarchical();
         $this->assertEquals(3, count($themes));
-        $this->assertEquals('Environment', $themes["base"][0]['name']);
+        $this->assertEquals('Environment', $themes['base'][0]['name']);
         $topParentId = $themes['base'][0]['id'];
         $this->assertEquals('Climate Change', $themes[$topParentId][0]['name']);
         $midParentId = $themes[$topParentId][0]['id'];
