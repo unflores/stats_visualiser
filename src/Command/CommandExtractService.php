@@ -2,7 +2,6 @@
 
 namespace App\Command;
 
-use App\Entity\Theme;
 use App\Imports\Themes\ExtractService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -20,13 +19,11 @@ class CommandExtractService extends Command
 {
     private $projectDir;
     private $entityManager;
-    private $themeRepository;
 
     public function __construct(string $projectDir, EntityManagerInterface $entityManager)
     {
         $this->projectDir = $projectDir;
         $this->entityManager = $entityManager;
-        $this->themeRepository = $entityManager->getRepository(Theme::class);
         parent::__construct();
     }
 
@@ -43,7 +40,7 @@ class CommandExtractService extends Command
         $extract_service = new ExtractService($this->entityManager);
 
         if ($extracthemes) {
-            $excel_file = $this->projectDir.'/public/File/emissions_GES_structure.xlsx';
+            $excel_file = $this->projectDir.'/var/import-data/emissions_GES_structure.xlsx';
 
             if (!file_exists($excel_file)) {
                 $io->error('file does not exist');
