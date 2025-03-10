@@ -3,20 +3,51 @@
 namespace App\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
+use App\Entity\Theme;
 class ThemesTest extends WebTestCase
 {
-    // Ideally this should be replaced with a more comprehensive test
-    // once we have our data model in place
+
+    private $client;
+    private $themeRepository;
+    private $entityManager;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->client = static::createClient();
+
+
+        $container = static::getContainer();
+        $this->entityManager = $container->get('doctrine.orm.entity_manager');
+        $this->themeRepository = $this->entityManager->getRepository(Theme::class);
+
+        $parent = new Theme();
+        $parent->setName('Environment');
+        $parent->setIsSection(true);
+        $parent->setParentId(null);
+        $parent->setExternalId('external_id1');
+        $this->entityManager->persist($parent);
+        $this->entityManager->flush();
+    }
+
+    protected function tearDown(): void
+    {
+        $themes = $this->themeRepository->findAll();
+        foreach ($themes as $theme) {
+            $this->entityManager->remove($theme);
+        }
+        $this->entityManager->flush();
+        parent::tearDown();
+    }
+
     public function testApiResponse(): void
     {
-        $client = static::createClient();
-        $client->request('GET', '/api/themes');
+        $this->client->request('GET', '/api/themes');
 
         $this->assertResponseIsSuccessful();
-        $content = $client->getResponse()->getContent();
+        $content = $this->client->getResponse()->getContent();
 
         $results = json_decode($content, true);
-        $this->assertEquals('environment', $results['themes'][0]['code']);
+        $this->assertEquals('Environment', $results['base'][0]['name']);
     }
 }
