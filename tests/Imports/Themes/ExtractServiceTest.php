@@ -35,7 +35,7 @@ class ExtractServiceTest extends KernelTestCase
     public function testImportThemeSave(): void
     {
         $ExtractServices = new ExtractService($this->entityManager);
-        $excel_file = $this->projectDir.'/var/import-data/emissions_GES_structure.xlsx';
+        $excel_file = $this->projectDir.'/tests/Imports/Themes/test-themes.xlsx';
         $themes = $ExtractServices->GetThemesFromExcelFile($excel_file);
         $preparedThemes = $ExtractServices->PrepareThemesForDatabase($themes);
         $savedThemesCount = $ExtractServices->SaveThemesOnDatabase($preparedThemes);
@@ -44,6 +44,12 @@ class ExtractServiceTest extends KernelTestCase
             $savedThemesCount,
             count($preparedThemes),
             'Themes are saved'
+        );
+
+        $imported_theme = $this->themeRepository->findOneBy(['externalId'=> 'V0.1']);
+
+        $this->assertEquals(
+            $imported_theme->getName(),'par gaz à effet de serre'
         );
 
         $this->assertEquals(
