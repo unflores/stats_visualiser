@@ -6,6 +6,7 @@ use App\Entity\Theme;
 use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
+
 class ExtractService
 {
     private $entityManager;
@@ -26,9 +27,7 @@ class ExtractService
     {
         $themes = [];
         if (!file_exists($excel_file)) {
-            throw new FileNotFoundException(
-                sprintf('Excel file "%s" not found', $excel_file)
-            );
+            throw new FileNotFoundException(sprintf('Excel file "%s" not found', $excel_file));
         }
         $spreadsheet = IOFactory::load($excel_file);
         $sheet = $spreadsheet->getActiveSheet();
@@ -46,8 +45,6 @@ class ExtractService
                 }
             }
         }
-
-
 
         return $themes;
     }
@@ -67,7 +64,7 @@ class ExtractService
 
     public function PrepareThemesForDatabase(array $themes): array
     {
-        return array_map(function($theme) {
+        return array_map(function ($theme) {
             return [
                 'name' => $theme['name'],
                 'externalId' => $theme['externalId'],

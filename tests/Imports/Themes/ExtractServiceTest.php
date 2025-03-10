@@ -43,7 +43,7 @@ class ExtractServiceTest extends KernelTestCase
         $this->assertEquals(
             $savedThemesCount,
             count($preparedThemes),
-            "Themes are saved"
+            'Themes are saved'
         );
 
         $this->assertEquals(
