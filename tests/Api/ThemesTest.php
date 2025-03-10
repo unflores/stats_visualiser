@@ -47,6 +47,6 @@ class ThemesTest extends WebTestCase
         $content = $this->client->getResponse()->getContent();
 
         $results = json_decode($content, true);
-        $this->assertEquals('Environment', $results['base'][0]['name']);
+        $this->assertEquals('Environment', $results['themes']['base'][0]['name']);
     }
 }

@@ -38,4 +38,4 @@ This project is a web-based visualization tool for exploring and analyzing open 
 ## Running tests
 
 - Build database schema: `symfony console doctrine:schema:update --force --env=test`
-- Run tests: `php bin/phpunit`
+- Run tests: `make test`

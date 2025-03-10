@@ -20,6 +20,6 @@ final class ThemesController extends AbstractController
     #[Route('/themes', name: 'app_themes', methods: ['GET'])]
     public function index(): JsonResponse
     {
-        return $this->json($this->themeRepository->findAllHierarchical());
+        return $this->json(['themes' => $this->themeRepository->findAllHierarchical()]);
     }
 }
