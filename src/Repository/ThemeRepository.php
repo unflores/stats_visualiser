@@ -8,6 +8,8 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class ThemeRepository extends ServiceEntityRepository
 {
+    private $entityManager;
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Theme::class);

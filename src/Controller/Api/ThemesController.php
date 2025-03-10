@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api')]
 final class ThemesController extends AbstractController
 {
-    #[Route('/themes', name: 'app_themes')]
+    #[Route('/themes', name: 'app_themes', methods: ['GET'])]
     public function index(): JsonResponse
     {
         return $this->json([

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Repository;
+namespace App\Tests\Themes\Repository;
 
 use App\Entity\Theme;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -32,7 +32,7 @@ class ThemeRepositoryTest extends KernelTestCase
     public function testAddParentTheme(): void
     {
         $theme = new Theme();
-        $theme->setCode('environnement');
+        $theme->setName('environnement');
         $theme->setIsSection(true);
         $theme->setParentId(null);
         $theme->setExternalId('1024');
@@ -44,7 +44,7 @@ class ThemeRepositoryTest extends KernelTestCase
     public function testAddChildTheme(): void
     {
         $child = new Theme();
-        $child->setCode('Emissions GES');
+        $child->setName('Emissions GES');
         $child->setIsSection(true);
         $child->setParentId(1);
         $child->setExternalId('2981');
