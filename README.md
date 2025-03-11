@@ -19,18 +19,18 @@ This project is a web-based visualization tool for exploring and analyzing open 
 
 3. Install Composer (PHP dependency manager):
    - Follow installation steps at: https://getcomposer.org/download/
-   - Run `composer install` to install dependencies
+   - Run `make dev/install-deps` to install dependencies
 
 4. Run migrations:
    ```
-   composer db:create
-   composer db:migrate
+   make db/create
+   make db/migrate
    ```
 
 5. Set up local development server:
    - Install Symfony CLI from: https://symfony.com/download
    - Build database schema: `symfony console doctrine:schema:update --force`
-   - Start the server: `symfony server:start`
+   - Start the server: `make dev/start-server`
 
 6. Access the application:
    - Open your browser and navigate to: http://localhost:8000/
@@ -38,4 +38,4 @@ This project is a web-based visualization tool for exploring and analyzing open 
 ## Running tests
 
 - Build database schema: `symfony console doctrine:schema:update --force --env=test`
-- Run tests: `php bin/phpunit`
+- Run tests: `make test`

@@ -53,4 +53,42 @@ class ThemeRepositoryTest extends KernelTestCase
         $this->entityManager->flush();
         $this->assertNotNull($child->getId());
     }
+
+    public function testFindAllHierarchical(): void
+    {
+        $themes = $this->themeRepository->findAllHierarchical();
+        $this->assertEquals(0, count($themes));
+
+        $parent = new Theme();
+        $parent->setName('Environment');
+        $parent->setIsSection(true);
+        $parent->setParentId(null);
+        $parent->setExternalId('external_id1');
+        $this->entityManager->persist($parent);
+        $this->entityManager->flush();
+
+        $child = new Theme();
+        $child->setName('Climate Change');
+        $child->setIsSection(true);
+        $child->setParentId($parent->getId());
+        $child->setExternalId('external_id2');
+        $this->entityManager->persist($child);
+        $this->entityManager->flush();
+
+        $grandchild = new Theme();
+        $grandchild->setName('Sea Level Rise');
+        $grandchild->setIsSection(true);
+        $grandchild->setParentId($child->getId());
+        $grandchild->setExternalId('external_id3');
+        $this->entityManager->persist($grandchild);
+        $this->entityManager->flush();
+
+        $themes = $this->themeRepository->findAllHierarchical();
+        $this->assertEquals(3, count($themes));
+        $this->assertEquals('Environment', $themes['base'][0]['name']);
+        $topParentId = $themes['base'][0]['id'];
+        $this->assertEquals('Climate Change', $themes[$topParentId][0]['name']);
+        $midParentId = $themes[$topParentId][0]['id'];
+        $this->assertEquals('Sea Level Rise', $themes[$midParentId][0]['name']);
+    }
 }
