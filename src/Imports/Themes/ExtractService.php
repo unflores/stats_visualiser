@@ -26,13 +26,18 @@ class ExtractService
      *
      * @return array themes import from the excel file
      */
-    public function GetThemesFromExcelFile(string $excel_file): array
+    public function GetThemesFromExcelFile(string $pathSheet): array
     {
         $themes = [];
-        if (!file_exists($excel_file)) {
-            throw new FileNotFoundException(sprintf('Excel file "%s" not found', $excel_file));
+        
+        if(pathinfo(basename($pathSheet), PATHINFO_EXTENSION) !== 'xlsx') {
+            throw new \Exception('The file must be an Excel file');
         }
-        $spreadsheet = IOFactory::load($excel_file);
+        if (!file_exists($pathSheet)) {
+            throw new FileNotFoundException(sprintf('Excel file "%s" not found', $pathSheet));
+        }
+
+        $spreadsheet = IOFactory::load($pathSheet);
         $sheet = $spreadsheet->getActiveSheet();
 
         foreach ($sheet->getRowIterator() as $row) {
