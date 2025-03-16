@@ -3,8 +3,8 @@
 namespace App\Imports\Themes;
 
 use App\Entity\Theme;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
@@ -13,7 +13,7 @@ class ExtractService
     private $entityManager;
     private $themeRepository;
     private $worksheet;
-    
+
     public function __construct(EntityManagerInterface $entityManager, Worksheet $worksheet)
     {
         $this->entityManager = $entityManager;
@@ -29,8 +29,8 @@ class ExtractService
     public function GetThemesFromExcelFile(string $pathSheet): array
     {
         $themes = [];
-        
-        if(pathinfo(basename($pathSheet), PATHINFO_EXTENSION) !== 'xlsx') {
+
+        if ('xlsx' !== pathinfo(basename($pathSheet), PATHINFO_EXTENSION)) {
             throw new \Exception('The file must be an Excel file');
         }
         if (!file_exists($pathSheet)) {

@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Imports\Themes\ExtractService;
 use Doctrine\ORM\EntityManagerInterface;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,11 +20,13 @@ class CommandExtractService extends Command
 {
     private $projectDir;
     private $entityManager;
+    private $worksheet;
 
     public function __construct(string $projectDir, EntityManagerInterface $entityManager)
     {
         $this->projectDir = $projectDir;
         $this->entityManager = $entityManager;
+
         parent::__construct();
     }
 
@@ -37,7 +40,8 @@ class CommandExtractService extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $extracthemes = $input->getArgument('extracthemes');
-        $extract_service = new ExtractService($this->entityManager);
+        $worksheet = new Worksheet();
+        $extract_service = new ExtractService($this->entityManager, $worksheet);
 
         if ($extracthemes) {
             $excel_file = $this->projectDir.'/var/import-data/emissions_GES_structure.xlsx';

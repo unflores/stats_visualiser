@@ -12,7 +12,7 @@ class ExtractServiceTest extends KernelTestCase
     private $entityManager;
     private $themeRepository;
     private $projectDir;
-    private  $worksheet;
+    private $worksheet;
 
     protected function setUp(): void
     {
