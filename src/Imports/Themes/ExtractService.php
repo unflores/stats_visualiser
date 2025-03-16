@@ -3,19 +3,22 @@
 namespace App\Imports\Themes;
 
 use App\Entity\Theme;
-use Doctrine\ORM\EntityManagerInterface;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Doctrine\ORM\EntityManagerInterface;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 class ExtractService
 {
     private $entityManager;
     private $themeRepository;
-
-    public function __construct(EntityManagerInterface $entityManager)
+    private $worksheet;
+    
+    public function __construct(EntityManagerInterface $entityManager, Worksheet $worksheet)
     {
         $this->entityManager = $entityManager;
         $this->themeRepository = $entityManager->getRepository(Theme::class);
+        $this->worksheet = $worksheet;
     }
 
     /**
