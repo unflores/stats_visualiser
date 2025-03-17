@@ -30,13 +30,20 @@ jobs:
           sudo systemctl restart nginx
         EOF
 
-    - name: Deploy Symfony
+    - name: Deploy Application
       run: |
         ssh deployer@165.232.69.153 << 'EOF'
           cd ${{ env.DEPLOY_PATH }}
           git fetch --all --tags
           git checkout ${{ github.event.release.tag_name }}
 
+          # build frontend
+          pushd frontend
+          npm install
+          npm run build
+          popd
+
+          # build symfony
           composer install --no-interaction --no-dev --optimize-autoloader
 
           php bin/console cache:clear --env=prod
@@ -47,6 +54,7 @@ jobs:
 
           php bin/console cache:warmup --env=prod
 
+          # Ensure www-data has proper access as a diff user is deploying
           sudo chmod -R 775 ${{ env.DEPLOY_PATH }}/var/*
           sudo chown -R www-data:www-data ${{ env.DEPLOY_PATH }}
 
