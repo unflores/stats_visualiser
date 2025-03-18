@@ -39,9 +39,10 @@ jobs:
 
     - name: Deploy Frontend
       run: |
-        scp -r frontend/dist/assets deployer@${{ env.DOMAIN }}:${{ env.DEPLOY_PATH }}/public/assets
-        scp -r frontend/dist/index.html deployer@${{ env.DOMAIN }}:${{ env.DEPLOY_PATH }}/public/index.html
-        scp -r frontend/dist/favicon.ico deployer@${{ env.DOMAIN }}:${{ env.DEPLOY_PATH }}/public/favicon.ico
+        ssh deployer@165.232.69.153 << 'EOF'
+          rm -rf ${{ env.DEPLOY_PATH }}/public/dist
+        EOF
+        scp -r frontend/dist/ deployer@${{ env.DOMAIN }}:${{ env.DEPLOY_PATH }}/public/dist
 
     - name: Deploy Backend and dependencies
       run: |
