@@ -23,6 +23,13 @@ jobs:
         chmod 600 ~/.ssh/id_rsa
         ssh-keyscan -H ${{ env.DOMAIN }} >> ~/.ssh/known_hosts
 
+    - name: Build Frontend
+      run: |
+        pushd frontend
+        npm install --ci
+        npm run build
+        popd
+
     - name: Put Site in Maintenance Mode
       run: |
         ssh deployer@${{ env.DOMAIN }} << 'EOF'
@@ -30,7 +37,7 @@ jobs:
           sudo systemctl restart nginx
         EOF
 
-    - name: Deploy Application
+    - name: Deploy Backend and dependencies
       run: |
         ssh deployer@165.232.69.153 << 'EOF'
           cd ${{ env.DEPLOY_PATH }}
@@ -39,8 +46,7 @@ jobs:
 
           # build frontend
           pushd frontend
-          npm install
-          npm run build
+          npm install --ci
           popd
 
           # build symfony
@@ -60,7 +66,11 @@ jobs:
 
           sudo systemctl restart php8.3-fpm
         EOF
-
+    - name: Deploy Frontend
+      run: |
+        scp -r frontend/dist/assets deployer@${{ env.DOMAIN }}:${{ env.DEPLOY_PATH }}/public/assets
+        scp -r frontend/dist/index.html deployer@${{ env.DOMAIN }}:${{ env.DEPLOY_PATH }}/public/index.html
+        scp -r frontend/dist/favicon.ico deployer@${{ env.DOMAIN }}:${{ env.DEPLOY_PATH }}/public/favicon.ico
     - name: Bring Site Back Online
       run: |
         ssh deployer@${{ env.DOMAIN }} << 'EOF'
