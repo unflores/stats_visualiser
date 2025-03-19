@@ -56,7 +56,7 @@ class CommandExtractService extends Command
         $themes = $readtheme->ingest();
         $io->info(count($themes).' themes extracted');
         $extract_service = new ExtractService($this->entityManager, $this->sheet);
-
+        //dd($themes);
         $prepared_themes = $extract_service->PrepareThemesForDatabase($themes);
         $saved_themes_count = $extract_service->SaveThemesOnDatabase($prepared_themes);
         $io->info("$saved_themes_count themes were upserted successfuly");
