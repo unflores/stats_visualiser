@@ -40,23 +40,26 @@ class CommandExtractService extends Command
             $io->error('file does not exist');
             return Command::FAILURE;
         }
+        
         $spreadsheet = IOFactory::load($excle_file);
+
         $this->sheet = $spreadsheet->getActiveSheet();
+        $io->info('Sheet loaded ...');
         $readtheme = new ThemeReader($this->sheet);
         $themes = $readtheme->extract();
-        $io->info(count($themes).' themes extracted');
 
+        $io->info(count($themes).' themes extracte successfully');
         $extract_service = new ExtractService($this->entityManager, $this->sheet);
-       
         $extracted_themes = $extract_service->PrepareThemesForDatabase($themes);
-        $saved_themes_count = $extract_service->SaveThemesOnDatabase($extracted_themes);
 
-        $io->info("$saved_themes_count themes were upserted successfuly");
-        $io->warning('This command is not implemented yet!');
-        dd($themes);
-
-        return Command::SUCCESS;
+        if($extract_service->checkThemesIsAlreadySaved($extracted_themes)){
+            $io->info('All themes already exist in the database');
+            return Command::SUCCESS;
+        }
+        else {
+            $saved_themes_count = $extract_service->SaveThemesOnDatabase($extracted_themes);
+            $io->info("$saved_themes_count themes were upserted successfuly");
+            return Command::SUCCESS;
+        }
     }
-
-
 }
