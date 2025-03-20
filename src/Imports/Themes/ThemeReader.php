@@ -12,7 +12,7 @@ class ThemeReader
 
     }
 
-    public function ingest(): array
+    public function extract(): array
     {
         $themes = [];
         foreach ($this->sheet->getRowIterator() as $row) {
