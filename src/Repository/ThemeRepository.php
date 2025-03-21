@@ -26,14 +26,5 @@ class ThemeRepository extends ServiceEntityRepository
         return $themesByParentId;
     }
 
-    public function checkThemesExiste(array $themes): bool
-    {
-        $sizeThemes = count($themes);
-        $themesCount = count($this->findAll());
-        if ($sizeThemes === $themesCount) {
-            return true;
-        }
-
-        return false;
-    }
+    
 }

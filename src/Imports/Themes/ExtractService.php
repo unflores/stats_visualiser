@@ -65,8 +65,5 @@ class ExtractService
         return count($arrayThemes);
     }
 
-    public function checkThemesIsAlreadySaved(array $themes): bool
-    {
-        return $this->themeRepository->checkThemesExiste($themes);
-    }
+    
 }

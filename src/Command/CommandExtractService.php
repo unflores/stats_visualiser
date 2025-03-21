@@ -52,15 +52,10 @@ class CommandExtractService extends Command
         $extract_service = new ExtractService($this->entityManager, $this->sheet);
         $extracted_themes = $extract_service->PrepareThemesForDatabase($themes);
 
-        if ($extract_service->checkThemesIsAlreadySaved($extracted_themes)) {
-            $io->info('All themes already exist in the database');
+        $saved_themes_count = $extract_service->SaveThemesOnDatabase($extracted_themes);
+        $io->info("$saved_themes_count themes were saved successfuly");
 
-            return Command::SUCCESS;
-        } else {
-            $saved_themes_count = $extract_service->SaveThemesOnDatabase($extracted_themes);
-            $io->info("$saved_themes_count themes were upserted successfuly");
-
-            return Command::SUCCESS;
-        }
+        return Command::SUCCESS;
+        
     }
 }
