@@ -32,12 +32,8 @@ class ThemeRepository extends ServiceEntityRepository
         $themesCount = count($this->findAll());
         if ($sizeThemes === $themesCount) {
             return true;
-        } 
-        return false;
-    }
+        }
 
-    public function saveThemes(array $themes):bool
-    {
-        return false;   
+        return false;
     }
 }

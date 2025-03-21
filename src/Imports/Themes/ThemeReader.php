@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Imports\Themes;
 
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -9,7 +9,6 @@ class ThemeReader
     public function __construct(
         private readonly Worksheet $sheet,
     ) {
-
     }
 
     public function extract(): array
@@ -32,6 +31,4 @@ class ThemeReader
 
         return $themes;
     }
-
-    
 }

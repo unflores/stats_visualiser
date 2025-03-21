@@ -4,9 +4,7 @@ namespace App\Imports\Themes;
 
 use App\Entity\Theme;
 use Doctrine\ORM\EntityManagerInterface;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 class ExtractService
 {
@@ -19,42 +17,6 @@ class ExtractService
         $this->entityManager = $entityManager;
         $this->themeRepository = $entityManager->getRepository(Theme::class);
         $this->worksheet = $worksheet;
-    }
-
-    /**
-     * Get Themes From Excel File.
-     *
-     * @return array themes import from the excel file
-     */
-    public function GetThemesFromExcelFile(string $pathSheet): array
-    {
-        $themes = [];
-
-        if ('xlsx' !== pathinfo(basename($pathSheet), PATHINFO_EXTENSION)) {
-            throw new \Exception('The file must be an Excel file');
-        }
-        if (!file_exists($pathSheet)) {
-            throw new FileNotFoundException(sprintf('Excel file "%s" not found', $pathSheet));
-        }
-
-        $spreadsheet = IOFactory::load($pathSheet);
-        $sheet = $spreadsheet->getActiveSheet();
-
-        foreach ($sheet->getRowIterator() as $row) {
-            $rowIndex = $row->getRowIndex();
-            $name = $sheet->getCell('A'.$rowIndex)->getValue();
-            $external_id = $sheet->getCell('B'.$rowIndex)->getValue();
-            if (null !== $name && null !== $external_id) {
-                if ($rowIndex > 2) {
-                    $themes[] = [
-                        'externalId' => $external_id,
-                        'name' => $name,
-                    ];
-                }
-            }
-        }
-
-        return $themes;
     }
 
     private function getParentExternalId(string $externalId): ?string
@@ -105,6 +67,6 @@ class ExtractService
 
     public function checkThemesIsAlreadySaved(array $themes): bool
     {
-      return  $this->themeRepository->checkThemesExiste($themes);
+        return $this->themeRepository->checkThemesExiste($themes);
     }
 }
