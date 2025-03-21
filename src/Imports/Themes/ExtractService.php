@@ -64,6 +64,4 @@ class ExtractService
 
         return count($arrayThemes);
     }
-
-    
 }

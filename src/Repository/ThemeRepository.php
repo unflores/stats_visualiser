@@ -25,6 +25,4 @@ class ThemeRepository extends ServiceEntityRepository
 
         return $themesByParentId;
     }
-
-    
 }

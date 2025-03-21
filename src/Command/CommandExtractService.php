@@ -56,6 +56,5 @@ class CommandExtractService extends Command
         $io->info("$saved_themes_count themes were saved successfuly");
 
         return Command::SUCCESS;
-        
     }
 }
